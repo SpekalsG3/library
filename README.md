@@ -28,3 +28,5 @@ Just submit your PR :)
 Only these criterias have to be met:
 - All code is Frontend side only. It has to work on GitHub pages.
 - Don't recreate components. If existing button is not generic enough - fix it and reuse it.
+- Don't install trillion of packages for mundane tasks, no `isNumber` shit. It's easy to write it yourself.
+If there are unexpected values - it's your fault, fix the source of invalid sources.

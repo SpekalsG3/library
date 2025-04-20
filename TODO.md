@@ -9,11 +9,17 @@
       - [x] shift+n - add new item
   - [x] Separate Movies and Tv Shows
 - Database update
-  - [ ] Remote db support
-  - [ ] Import/export of db
   - [ ] Storage adapters
-  - [ ] Support for local storage
+    - [ ] Sqlite
+    - [ ] Postgres
+    - [ ] Local storage
+  - [ ] Import/export of db
+  - [ ] Migrations
+    - [ ] With Knex
+    - [ ] Generalize without knex
 - Categories update
   - [ ] UI to create new categories
+    - [ ] save user-defined entity schema
+    - [ ] dynamic entity tables
   - [ ] Search
   - [ ] Action feedback popup (error, success)
