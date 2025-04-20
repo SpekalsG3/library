@@ -11,11 +11,12 @@
 - Database update
   - [ ] Storage adapters
     - [ ] Sqlite
-    - [ ] Postgres
+    - [x] Postgres
     - [ ] Local storage
   - [ ] Import/export of db
+    - [ ] Convert from one adapter to another
   - [ ] Migrations
-    - [ ] With Knex
+    - [x] With Knex
     - [ ] Generalize without knex
 - Categories update
   - [ ] UI to create new categories

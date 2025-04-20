@@ -1,0 +1,8 @@
+services:
+  pg:
+    image: postgres:16-alpine
+    pull_policy: missing
+    environment:
+      POSTGRES_PASSWORD: "asdf"
+    ports:
+      - 5432:5432

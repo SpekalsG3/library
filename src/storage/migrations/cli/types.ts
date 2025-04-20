@@ -1,4 +1,4 @@
-import {Database} from "sqlite";
+import {IStorageAdapter} from "../../types";
 
 export interface CliOption {
   value_placeholders: string[],
@@ -12,13 +12,13 @@ export interface CliCommand {
   subcommands: { [command: string]: CliCommand }
 
   getOptionsHelp(): CliOptions,
-  handler(name: string, argv: string[]): Promise<void>,
+  handler(db: IStorageAdapter, name: string, argv: string[]): Promise<void>,
 }
 
 export interface Migration {
   name: string,
-  up(db: Database): Promise<void>,
-  down(db: Database): Promise<void>,
+  up(db: IStorageAdapter): Promise<void>,
+  down(db: IStorageAdapter): Promise<void>,
 }
 
 interface Option {

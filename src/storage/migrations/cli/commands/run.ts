@@ -1,13 +1,9 @@
 import { CliCommand, CliOptions } from "../types";
-import { getDB } from "../utils";
-import { Database } from "sqlite";
 import { MigrationsList } from "../../files";
+import {IStorageAdapter} from "../../../types";
 
-async function execute(name: string, db: Database): Promise<void> {
-  const history = await db.all<{
-    id: number,
-    public_id: string,
-  }[]>("SELECT id, public_id FROM migration_history ORDER BY id ASC");
+async function execute(name: string, db: IStorageAdapter): Promise<void> {
+  const history = await db.migrationsAll();
 
   let count = 0;
   const migrationToIndex: { [name: string]: number } = {};
@@ -26,17 +22,15 @@ async function execute(name: string, db: Database): Promise<void> {
       }
     }
 
-    await db.exec("BEGIN TRANSACTION");
+    await db.begin();
     try {
-      await db.exec("INSERT INTO migration_history (public_id) VALUES (" +
-        `"${migration.name}"` +
-        ")");
+      await db.migrationsCreate(migration.name);
 
       await migration.up(db);
 
-      await db.exec("COMMIT");
+      await db.commit();
     } catch (e) {
-      await db.exec("ROLLBACK");
+      await db.rollback();
       throw e;
     }
 
@@ -57,7 +51,7 @@ export const RunCommand: CliCommand = {
     return {};
   },
 
-  async handler(name: string, argv: string[]): Promise<void> {
+  async handler(db: IStorageAdapter, name: string, argv: string[]): Promise<void> {
     const unknownOptions = [];
     for (let i = 0; i < argv.length; i++) {
       if (argv[i].startsWith('-')) {
@@ -68,13 +62,9 @@ export const RunCommand: CliCommand = {
       throw new Error(`Unknown options: ${unknownOptions.join(', ')}`)
     }
 
-    const db = await getDB();
-
     {
-      const setLock = await db.get<{
-        count: number,
-      }>("UPDATE migration_lock SET is_locked = 0 RETURNING (SELECT count(*)) AS count");
-      if (setLock === undefined || setLock.count != 1) {
+      const setLock = await db.migrationsSetLock(true)
+      if (!setLock) {
         throw new Error("Failed to set migration lock");
       }
     }
@@ -87,10 +77,8 @@ export const RunCommand: CliCommand = {
     }
 
     {
-      const freeLock = await db.get<{
-        count: number,
-      }>("UPDATE migration_lock SET is_locked = 1 RETURNING (SELECT count(*)) AS count");
-      if (freeLock === undefined || freeLock.count != 1) {
+      const freeLock = await db.migrationsSetLock(false)
+      if (!freeLock) {
         throw new Error("Failed to free migration lock");
       }
     }

@@ -7,26 +7,29 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migration:init": "tsx migrations/cli/index.ts init",
-    "migration:run": "tsx migrations/cli/index.ts run",
-    "migration:rollback": "tsx migrations/cli/index.ts rollback"
+    "migration:init": "ts-node src/storage/migrations/cli/index.ts init",
+    "migration:run": "ts-node src/storage/migrations/cli/index.ts run",
+    "migration:rollback": "ts-node src/storage/migrations/cli/index.ts rollback"
   },
   "dependencies": {
     "classnames": "^2.3.2",
+    "knex": "^3.1.0",
     "next": "^12",
+    "pg": "^8.14.1",
     "react": "^18",
     "react-dom": "^18",
     "react-redux": "^8.1.3",
     "redux": "^4.2.1",
-    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.11.13",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
+    "ts-node": "^10.9.2",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
   }

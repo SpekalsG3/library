@@ -1,4 +1,5 @@
 import { MainCommand } from "./commands";
+import {StoragePG} from "../../postgres";
 
 async function cli() {
   const argv = process.argv;
@@ -19,10 +20,25 @@ async function cli() {
     commandName.push(str);
   }
   const name = commandName.join(' ');
+
+  const db = new StoragePG({
+    user: "postgres",
+    password: "asdf",
+    host: "127.0.0.1",
+    port: 5432,
+    dbName: "media_library",
+  });
+
+  let error: Error | null = null
   try {
-    await command.handler(name, argv.slice(i))
+    await command.handler(db, name, argv.slice(i))
   } catch (e) {
-    throw new Error(`[${name}]: ${e}`);
+    error = new Error(`[${name}]: ${e}`);
+  }
+
+  await db.close();
+  if (error) {
+    throw error;
   }
 }
 

@@ -1,7 +1,6 @@
 import { CliCommand, CliOptions } from "../types";
-import { getDB } from "../utils";
-import { Database } from "sqlite";
 import { MigrationsList } from "../../files";
+import {IStorageAdapter} from "../../../types";
 
 const RollbackOptions: CliOptions = {
   count: {
@@ -24,7 +23,7 @@ interface ParsedOptions {
   all: boolean,
 }
 
-async function execute(name: string, db: Database, options: ParsedOptions): Promise<void> {
+async function execute(name: string, db: IStorageAdapter, options: ParsedOptions): Promise<void> {
   {
     let checkCount = 0
       + ((options.count  !== undefined) ? 1 : 0)
@@ -37,10 +36,7 @@ async function execute(name: string, db: Database, options: ParsedOptions): Prom
     }
   }
 
-  const history = await db.all<{
-    id: number,
-    public_id: string,
-  }[]>("SELECT id, public_id FROM migration_history ORDER BY id ASC");
+  const history = await db.migrationsAll();
 
   let stop = history.length; // to prevent accidental rollback of all migrations
   if (options.all) {
@@ -69,15 +65,15 @@ async function execute(name: string, db: Database, options: ParsedOptions): Prom
       throw new Error(`Order of migrations does not match migration history (${history[i].public_id} != ${migration.name})`)
     }
 
-    await db.exec("BEGIN TRANSACTION");
+    await db.begin();
     try {
-      await db.exec(`DELETE FROM migration_history WHERE public_id = "${migration.name}"`);
+      await db.migrationsDelete(migration.name);
 
       await migration.down(db);
 
-      await db.exec("COMMIT");
+      await db.commit();
     } catch (e) {
-      await db.exec("ROLLBACK");
+      await db.rollback();
       throw e;
     }
 
@@ -98,7 +94,7 @@ export const RollbackCommand: CliCommand = {
     return RollbackOptions;
   },
 
-  async handler(name: string, argv: string[]): Promise<void> {
+  async handler(db: IStorageAdapter, name: string, argv: string[]): Promise<void> {
     const parsedOptions: ParsedOptions = {
       all: false,
     }
@@ -145,13 +141,9 @@ export const RollbackCommand: CliCommand = {
       throw new Error(`Unknown options: ${unknownOptions.join(', ')}`)
     }
 
-    const db = await getDB();
-
     {
-      const setLock = await db.get<{
-        count: number,
-      }>("UPDATE migration_lock SET is_locked = 0 RETURNING (SELECT count(*)) AS count");
-      if (setLock === undefined || setLock.count != 1) {
+      const setLock = await db.migrationsSetLock(true);
+      if (!setLock) {
         throw new Error("Failed to set migration lock");
       }
     }
@@ -164,10 +156,8 @@ export const RollbackCommand: CliCommand = {
     }
 
     {
-      const freeLock = await db.get<{
-        count: number,
-      }>("UPDATE migration_lock SET is_locked = 1 RETURNING (SELECT count(*)) AS count");
-      if (freeLock === undefined || freeLock.count != 1) {
+      const freeLock = await db.migrationsSetLock(false);
+      if (!freeLock) {
         throw new Error("Failed to free migration lock");
       }
     }
