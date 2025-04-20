@@ -1,0 +1,135 @@
+.title {
+    width: 200px;
+    position: relative;
+}
+
+.titleRate,
+.titleEditIcon,
+.titleRewatchedTimes {
+    cursor: pointer;
+    position: absolute;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+.titleRate {
+    background: rgb(var(--main));
+    font-size: 32px;
+    top: 5px;
+    left: 6px;
+}
+.titleEditIcon {
+    background: rgb(var(--main));
+    font-size: 32px;
+    top: 5px;
+    right: 6px;
+}
+.titleRewatchedTimes {
+    background: rgb(var(--highlight-semi));
+    font-size: 20px;
+    bottom: 5px;
+    right: 6px;
+    text-align: center;
+    min-width: 25px;
+}
+
+.titleCover {
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 73%;
+    height: 255px;
+    overflow: hidden;
+}
+
+.titleCoverInner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.titleCoverLastep {
+    cursor: pointer;
+    position: absolute;
+    bottom: 5px;
+    padding: 4px 7px;
+    border-radius: 25px;
+    transition: box-shadow .1s;
+}
+
+.titleCoverLastep__finished {
+    color: black;
+    background: rgb(var(--inactive));
+    box-shadow: 0 0 5px 1px rgb(var(--inactive));
+}
+
+.titleCoverLastep__new {
+    color: rgb(var(--text-regular));
+    background: rgb(var(--highlight));
+    box-shadow: 0 0 5px 1px rgb(var(--highlight));
+}
+.titleCoverLastep__new:hover {
+    box-shadow: 0 0 3px 2px rgb(var(--highlight));
+}
+
+.secondHalf {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70px;
+    background: rgb(var(--main-semi));
+    padding: 5px;
+}
+
+.titleEpisodeInfo {
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.titleInfoTitle {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.titleInfoType {
+    text-align: center;
+    background: rgb(var(--main-extra));
+    padding: 2px 0;
+    border-radius: 0 0 10px 10px;
+}
+
+.titleInfoItem,
+.titleInfoEpisodes {
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    color: rgb(var(--text-semi));
+}
+
+.titleInfoEpisodes {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.titleInfoEpisodes:hover .titleInfoEpisodesTotal {
+    bottom: calc(100% + 5px);
+    opacity: 1;
+}
+
+.titleInfoEpisodesTotal {
+    opacity: 0;
+    pointer-events: none;
+    transition: bottom .1s, opacity .1s;
+    position: absolute;
+    bottom: 100%;
+    background: rgb(var(--main-extra));
+    border-radius: 5px;
+    padding: 3px 5px;
+}

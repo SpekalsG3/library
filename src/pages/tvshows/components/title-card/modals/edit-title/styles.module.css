@@ -1,0 +1,15 @@
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    column-gap: 10px;
+}
+
+.button,
+.buttonDelete {
+    margin-top: 15px;
+}
+
+.buttonDelete {
+    background: rgb(var(--highlight));
+}

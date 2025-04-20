@@ -1,0 +1,32 @@
+.modal {
+    width: 100%;
+    max-width: 500px;
+}
+
+.input {
+    margin-top: 8px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    column-gap: 10px;
+}
+
+.button,
+.buttonDelete {
+    margin-top: 15px;
+}
+
+.buttonDelete {
+    background: rgb(var(--highlight));
+}
+
+.inputColumns {
+    display: flex;
+    justify-content: space-between;
+}
+.inputColumn {
+    width: 48%;
+}

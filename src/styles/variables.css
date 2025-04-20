@@ -1,0 +1,84 @@
+:root {
+    --main: 19, 19, 19;
+    --main-semi: 40, 40, 40;
+    --main-extra: 57, 57, 57;
+    --highlight: 175, 43, 191;
+    --highlight-semi: 100, 6, 111;
+    --inactive: 193, 193, 193;
+    --text-regular: 240, 240, 240;
+    --text-semi: 166, 166, 166;
+    --outline: 190, 190, 190;
+
+    /* --max-width: 1100px;
+    --border-radius: 12px;
+    --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+        'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+        'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+
+    --foreground- 0, 0, ;
+    --background-start- 214, 219, 22;
+    --background-end- 255, 255, 25;
+
+    --primary-glow: conic-gradient(
+        from 180deg at 50% 50%,
+        #16abff33 0deg,
+        #0885ff33 55deg,
+        #54d6ff33 120deg,
+        #0071ff33 160deg,
+        transparent 360deg
+    );
+    --secondary-glow: radial-gradient(
+        (255, 255, 255, 1,
+        (255, 255, 255, )
+    );
+
+    --tile-start- 239, 245, 24;
+    --tile-end- 228, 232, 23;
+    --tile-border: conic-gradient(
+        #00000080,
+        #00000040,
+        #00000030,
+        #00000020,
+        #00000010,
+        #00000010,
+        #00000080
+    );
+
+    --callout- 238, 240, 24;
+    --callout-border- 172, 175, 17;
+    --card- 180, 185, 18;
+    --card-border- 131, 134, 13;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    :root {
+        --foreground- 255, 255, 25;
+        --background-start- 0, 0, ;
+        --background-end- 0, 0, ;
+
+        --primary-glow: radial-gradient((1, 65, 255, 0.4), (1, 65, 255, 0);
+        --secondary-glow: linear-gradient(
+        to bottom right,
+        (1, 65, 255, 0,
+        (1, 65, 255, 0,
+        (1, 65, 255, 0.)
+        );
+
+        --tile-start- 2, 13, 4;
+        --tile-end- 2, 5, 1;
+        --tile-border: conic-gradient(
+        #ffffff80,
+        #ffffff40,
+        #ffffff30,
+        #ffffff20,
+        #ffffff10,
+        #ffffff10,
+        #ffffff80
+        );
+
+        --callout- 20, 20, 2;
+        --callout-border- 108, 108, 10;
+        --card- 100, 100, 10;
+        --card-border- 200, 200, 20;
+    } */
+}

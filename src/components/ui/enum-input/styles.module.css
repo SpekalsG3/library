@@ -1,0 +1,53 @@
+.inputBox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 34px;
+}
+
+.inputItem {
+    margin: 4px;
+    cursor: pointer;
+    position: relative;
+    padding: 3px 5px;
+    border-radius: 10px;
+    border: 1px solid rgb(var(--outline));
+    transition: box-shadow .2s;
+}
+.inputItem:hover,
+.inputItem:focus {
+    outline: none;
+    box-shadow: 0 0 2px 1px rgb(var(--outline));
+}
+
+.inputItem:after {
+    transition: opacity .2s;
+    opacity: 0;
+    position: absolute;
+    font-family: "Symbols";
+    content: "close";
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background: rgb(var(--highlight));
+    left: calc(50% - 9px);
+}
+
+.inputItem:hover:after {
+    opacity: 1;
+}
+
+.inputInner {
+    padding: 0 3px;
+    border: none;
+    width: 100%;
+    height: 28px;
+    outline: none;
+    background: none;
+    border-bottom: 1px solid rgb(var(--outline));
+    caret-color: rgb(var(--text-regular));
+}

@@ -1,0 +1,53 @@
+.modal {
+    width: 100%;
+    max-width: 700px;
+}
+.input + .input {
+    margin-top: 8px;
+}
+
+.input input,
+.input textarea,
+.inputListRow input {
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+}
+
+.inputColumns {
+    display: flex;
+    justify-content: space-between;
+}
+.inputColumn {
+    width: 48%;
+    height: 100px;
+}
+
+.inputList {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: scroll;
+    position: relative;
+}
+.inputListRow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.inputListRow + .inputListRow {
+    margin-top: 5px;
+}
+.inputListRowKey {
+    line-height: 200%;
+}
+.inputListRowValue {
+    margin-left: 10px;
+}
+.inputListButton {
+    margin-top: 10px;
+}
+
+.notes {
+    height: 200px;
+}

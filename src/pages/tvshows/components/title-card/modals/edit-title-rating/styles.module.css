@@ -1,0 +1,20 @@
+.modal {
+    width: 100%;
+    max-width: 500px;
+}
+
+.button {
+    margin-top: 15px;
+}
+
+.ratingField {
+    display: flex;
+}
+
+.ratingFieldTitle {
+    width: 25%;
+}
+
+.ratingFieldInner {
+    width: 75%;
+}

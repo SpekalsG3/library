@@ -1,0 +1,28 @@
+.modal {
+    z-index: 1;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: rgba(0,0,0, .75);
+    overflow-y: scroll;
+}
+
+.modalTitle {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+.modalInner {
+    margin: 50px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgb(var(--main));
+    border: 1px solid rgb(var(--outline));
+    box-shadow: 0 0 5px 0px rgb(var(--outline));
+}

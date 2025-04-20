@@ -1,0 +1,58 @@
+.content {
+    margin-top: 26px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contentNav {
+    display: flex;
+    position: relative;
+}
+
+.contentNavButton {
+    cursor: pointer;
+    width: 110px;
+    text-align: center;
+    border-radius: 25px;
+    border: 1px solid rgb(var(--outline));
+    box-shadow: 0 0 4px rgb(var(--outline));
+}
+
+.contentNavButtonCurrent {
+    background: rgb(var(--highlight));
+}
+
+.contentNavButton + .contentNavButton {
+    margin-left: 5px;
+}
+
+.contentNavButtonAdd {
+    cursor: pointer;
+    margin-left: 10px;
+    transition: box-shadow .1s;
+    border-radius: 25px;
+    user-select: none;
+}
+
+.contentWrapper {
+    position: relative;
+    width: 100%;
+    height: 90vh;
+    margin-top: 20px;
+}
+
+.contentTitles {
+    max-height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    overflow: scroll;
+}
+
+.item {
+    margin: 6px;
+}
