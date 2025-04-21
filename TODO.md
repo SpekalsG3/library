@@ -9,12 +9,13 @@
       - [x] shift+n - add new item
   - [x] Separate Movies and Tv Shows
 - Database update
+  - [ ] UI to connect to db
   - [ ] Storage adapters
     - [ ] Sqlite
     - [x] Postgres
-    - [ ] Local storage
+  - [ ] Entities to do CRUD using adapters
   - [ ] Import/export of db
-    - [ ] Convert from one adapter to another
+  - [ ] Convert from one storage to another
   - [ ] Migrations
     - [x] With Knex
     - [ ] Generalize without knex

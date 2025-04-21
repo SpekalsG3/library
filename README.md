@@ -4,6 +4,12 @@ This is a tool for personal use. Meaning, if you want a feature implemented or a
 wasn't addressed before, see [Contribution](#contribution). I won't be addressing anything
 that is out of my personal scope.
 
+# Stateless
+
+Meaning this application itself only uses localStorage to persist data between tabs
+and otherwise does not store anything. All data is stored in database you provide.
+And database can be managed solely through api requests.
+
 # 10 rating scale, no decimals
 
 - 0 - Worst, so bad you don't even know what you watched. 
@@ -26,7 +32,6 @@ Final score is calculated as an average of rating per season.
 Just submit your PR :)
 
 Only these criterias have to be met:
-- All code is Frontend side only. It has to work on GitHub pages.
 - Don't recreate components. If existing button is not generic enough - fix it and reuse it.
 - Don't install trillion of packages for mundane tasks, no `isNumber` shit. It's easy to write it yourself.
 If there are unexpected values - it's your fault, fix the source of invalid sources.
