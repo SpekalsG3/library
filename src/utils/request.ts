@@ -1,4 +1,4 @@
-import {IRequestResponseSuccess} from "../pages/api/types";
+import {IRequestResponseSuccess} from "@api/types";
 
 export enum MyRequestMethods {
     POST = "POST",

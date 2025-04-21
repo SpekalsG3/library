@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migration:init": "ts-node src/storage/migrations/cli/index.ts init",
-    "migration:run": "ts-node src/storage/migrations/cli/index.ts run",
-    "migration:rollback": "ts-node src/storage/migrations/cli/index.ts rollback"
+    "migration:init": "ts-node src/database/migrations/cli/index.ts init",
+    "migration:run": "ts-node src/database/migrations/cli/index.ts run",
+    "migration:rollback": "ts-node src/database/migrations/cli/index.ts rollback"
   },
   "dependencies": {
     "classnames": "^2.3.2",

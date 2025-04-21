@@ -2,12 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { IRequestResponseSuccess } from "../types";
 import { handler } from "../utils/handler";
 import { runChecks } from "../utils/run-checks";
-import { validateItemData} from "./index.p";
-import { getDB } from "../../../../migrations/cli/utils";
 import { MovieEditable, MoviesDBManager } from "../../../entities/movies";
 import { DBEntityManager } from "../../../entities/interface";
 import { CinemaGenresDBManager } from "../../../entities/cinema-genres";
 import { CinemaTagsDBManager } from "../../../entities/cinema-tags";
+import {validateItemData} from "./index.p";
 
 export interface IEditMovieReq {
   item: MovieEditable,

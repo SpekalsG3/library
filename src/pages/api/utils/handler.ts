@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { IRequestResponseSuccess } from "../types";
 
-type handle<T> = (
+export type Handle<T> = (
     req: NextApiRequest,
-    res: NextApiResponse<T>,
+    res: NextApiResponse<IRequestResponseSuccess<T>>,
 ) => void | Promise<void>
 
 function notFound (
@@ -27,10 +28,10 @@ function error (
 
 export function handler<POST, GET, PUT, DEL> (
     handlers: {
-        "post"?: handle<POST>,
-        "get"?: handle<GET>,
-        "put"?: handle<PUT>,
-        "delete"?: handle<DEL>,
+        "post"?: Handle<POST>,
+        "get"?: Handle<GET>,
+        "put"?: Handle<PUT>,
+        "delete"?: Handle<DEL>,
         [s: string]: any,
     }
 ) {

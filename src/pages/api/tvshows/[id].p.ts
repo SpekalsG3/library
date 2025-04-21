@@ -3,7 +3,6 @@ import { IRequestResponseSuccess } from "../types";
 import { handler } from "../utils/handler";
 import { runChecks } from "../utils/run-checks";
 import { validateEditItemData } from "./index.p";
-import { getDB } from "../../../../migrations/cli/utils";
 import { TvShowDbManager, TVShowEditable } from "../../../entities/tvshows";
 import { DBEntityManager } from "../../../entities/interface";
 import { CinemaGenresDBManager } from "../../../entities/cinema-genres";

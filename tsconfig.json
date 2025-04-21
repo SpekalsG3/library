@@ -31,9 +31,12 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@store": ["./src/store"],
-      "@styles/*": ["./src/styles/*"]
+      "@api/*": ["src/pages/api/*"],
+      "@database/*": ["src/database/*"],
+      "@ui-kit/*": ["src/ui-kit/*"],
+      "@styles/*": ["src/styles/*"]
     },
     "forceConsistentCasingInFileNames": true
   },

@@ -5,7 +5,7 @@ import '@styles/variables.css';
 
 import Head from 'next/head';
 import { AppProps } from 'next/app';
-import { LayersProvider } from "../components/ux/layers";
+import { LayersProvider } from "@ui-kit/ux/layers";
 import {LocalStorageProvider} from "../utils/use-local-storage";
 
 export default function App ({

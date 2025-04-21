@@ -22,10 +22,6 @@ export function LocalStorageProvider(props: PropsWithChildren<{
 }
 
 export function useLocalStorage<T>(key: string): [T | null, (value: T | null) => void] {
-  if (typeof window === 'undefined') {
-    return [null, () => {}];
-  }
-
   const { lsRef, subscribers } = useContext(LocalStorageContext);
 
   function getKey(key: string) {

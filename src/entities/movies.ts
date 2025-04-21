@@ -1,6 +1,6 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
-import { CTvShowGroups } from "../pages/api/tvshows/index.p";
-import { EDataGroups } from "../pages/api/types";
+import { EDataGroups } from "@api/types";
+import {CTvShowGroups} from "@api/tvshows/index.p";
 
 export const MoviesDBManager = new DBEntityManager(
   "movies",

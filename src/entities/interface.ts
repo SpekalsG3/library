@@ -1,4 +1,3 @@
-import {getDB} from "../../migrations/cli/utils";
 import {escapeSqlString, unescapeSqlString} from "../utils/database/escapes";
 
 export enum EDBFieldTypes {

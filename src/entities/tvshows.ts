@@ -1,6 +1,6 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
-import { CTvShowGroups, fromSeasonList, toSeasonList } from "../pages/api/tvshows/index.p";
-import { EDataGroups } from "../pages/api/types";
+import { EDataGroups } from "@api/types";
+import {CTvShowGroups} from "@api/tvshows/index.p";
 
 export const TvShowDbManager = new DBEntityManager(
   "tv_shows",
@@ -18,7 +18,7 @@ export const TvShowDbManager = new DBEntityManager(
           throw new Error('Unknown status')
         }
         return s as EDataGroups;
-      }
+      },
     },
     title: {
       dbType: EDBFieldTypes.String,

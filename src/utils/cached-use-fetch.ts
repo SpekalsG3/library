@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import { IRequestResponseSuccess } from "../pages/api/types";
+import { IRequestResponseSuccess } from "@api/types";
 
 export type CachedUseFetchItem<T> = {
   current: T,

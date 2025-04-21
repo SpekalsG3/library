@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { handler } from '../utils/handler'
 import { EDataGroups, IRequestResponseSuccess } from '../types';
 import { runChecks } from '../utils/run-checks';
-import { getDB } from "../../../../migrations/cli/utils";
 import { isValidUrl } from "../utils/is-valid-url";
 import { TVShow, TVShowEditable, TvShowDbManager } from "../../../entities/tvshows";
 import { CinemaGenresDBManager } from "../../../entities/cinema-genres";
