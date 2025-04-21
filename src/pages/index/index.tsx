@@ -1,39 +1,19 @@
-import { useState } from "react";
-import cn from "classnames";
+import {IndexContent} from "./components/content";
+import {LoadStorage} from "./components/load-storage";
 
 import styles from './styles.module.css'
-import MoviesPage from "../movies/index.p";
-import TvShowsPage from "../tvshows/index.p";
-
-enum EPages {
-  movies = "movies",
-  tvshows = "tvshows",
-}
+import {useStorage} from "../../storage/use-storage";
 
 export function IndexPage () {
-  const [page, setPage] = useState(EPages.tvshows);
+  const storage = useStorage();
+
   return <>
     <div className={styles.main}>
-      <div className={styles.contentNav}>
-        {
-          [
-            [EPages.tvshows, "Tv Shows"],
-            [EPages.movies, "Movies"],
-          ].map(([flag, text], i) => (
-            <div
-              key={i}
-              className={cn(styles.contentNavButton, page === flag && styles.contentNavButtonCurrent)}
-              onClick={() => setPage(flag as EPages)}
-            >
-              {text}
-            </div>
-          ))
-        }
-      </div>
-      <div className={styles.pages}>
-        {page === EPages.tvshows && <TvShowsPage/>}
-        {page === EPages.movies && <MoviesPage/>}
-      </div>
+      {
+        storage
+          ? <IndexContent/>
+          : <LoadStorage/>
+      }
     </div>
   </>
 }

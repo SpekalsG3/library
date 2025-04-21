@@ -1,0 +1,16 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    max-width: 100%;
+}
+
+.title {
+    margin-top: 10px;
+    font-size: var(--size-big);
+    text-align: center;
+}
+
+.input {
+    margin-top: 10px;
+}
