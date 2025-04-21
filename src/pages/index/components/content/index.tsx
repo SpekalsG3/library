@@ -2,15 +2,17 @@ import { useState } from "react";
 import cn from "classnames";
 
 import styles from './styles.module.css'
-import MoviesPage from "../../../movies/index.p";
-import TvShowsPage from "../../../tvshows/index.p";
+import TvShowsPage from "../../../tabs/tvshows";
+import MoviesPage from "../../../tabs/movies";
 
 enum EPages {
   movies = "movies",
   tvshows = "tvshows",
 }
 
-export function IndexContent () {
+export function IndexContent (props: {
+  isLoading: boolean, // TODO: use
+}) {
   const [page, setPage] = useState(EPages.tvshows);
   return <>
     <div className={styles.contentNav}>

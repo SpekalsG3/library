@@ -1,24 +1,26 @@
-import {useLocalStorage} from "../../../../utils/use-local-storage";
-import {StorageConnOpts, StorageConnectionKey, StorageConnType} from "../../../../storage/use-storage";
-import {Select} from "../../../../components/ui/select";
+import {Select} from "@ui-kit/ui/select";
 import {useRef, useState} from "react";
-import Button from "../../../../components/ui/button";
-import {EInputType, Input} from "../../../../components/ui/input";
+import Button from "@ui-kit/ui/button";
+import {EInputType, Input} from "@ui-kit/ui/input";
 
 import styles from './styles.module.css'
+import {ConnectionOptions, ConnectionTypes} from "@api/db/index.p";
 
-export function LoadStorage() {
-  const [connType, setConnType] = useState<StorageConnType>(StorageConnType.Postgres);
-  const [connection, setConnection] = useLocalStorage<StorageConnOpts<StorageConnType>>(StorageConnectionKey);
+export const StorageConnectionKey = "storage-connection";
 
+export function LoadConnection(props: {
+  defaultConn: null | ConnectionOptions<ConnectionTypes>,
+  isLoading: boolean,
+  onConnect: (opts: ConnectionOptions<ConnectionTypes>) => void,
+}) {
   function defaultConnOptions() {
     const opts: {
-      [T in StorageConnType]: StorageConnOpts<T>['options']
+      [T in ConnectionTypes]: ConnectionOptions<T>['options']
     } = {};
-    for (const type of Object.values(StorageConnType)) {
-      if (connection) {
-        opts[type] = connection.type == type
-          ? connection.options
+    for (const type of Object.values(ConnectionTypes)) {
+      if (props.defaultConn) {
+        opts[type] = props.defaultConn.type === type
+          ? props.defaultConn.options
           : {};
       } else {
         opts[type] = {};
@@ -26,12 +28,14 @@ export function LoadStorage() {
     }
     return opts;
   }
-  const connOptions = useRef(defaultConnOptions())
+
+  const [connType, setConnType] = useState<ConnectionTypes>(ConnectionTypes.Postgres);
+  const connOptsRef = useRef(defaultConnOptions())
 
   function onConnect() {
-    setConnection({
+    props.onConnect({
       type: connType,
-      options: connOptions.current[connType],
+      options: connOptsRef.current[connType],
     });
   }
 
@@ -44,49 +48,49 @@ export function LoadStorage() {
         title="Connection type"
         options={[{
           label: "Postgres",
-          value: StorageConnType.Postgres,
+          value: ConnectionTypes.Postgres,
         // }, {
         //   label: "SQLite3",
-        //   value: StorageConnType.SQLite3,
+        //   value: ConnectionTypes.SQLite3,
         }]}
         onChange={setConnType}
         value={connType}
       />
       {
-        connType != StorageConnType.Postgres
+        connType != ConnectionTypes.Postgres
           ? null
           : <>
             <Input
               title="Username"
-              onChange={(v) => connOptions.current[connType].user = v}
+              onChange={(v) => connOptsRef.current[connType].user = v}
               type={EInputType.text}
               className={styles.input}
               tabIndex={1}
             />
             <Input
               title="User password"
-              onChange={(v) => connOptions.current[connType].password = v}
+              onChange={(v) => connOptsRef.current[connType].password = v}
               type={EInputType.text}
               className={styles.input}
               tabIndex={2}
             />
             <Input
               title="Hostname"
-              onChange={(v) => connOptions.current[connType].host = v}
+              onChange={(v) => connOptsRef.current[connType].host = v}
               type={EInputType.text}
               className={styles.input}
               tabIndex={3}
             />
             <Input
               title="Host port"
-              onChange={(v) => connOptions.current[connType].port = v}
+              onChange={(v) => connOptsRef.current[connType].port = v}
               type={EInputType.number}
               className={styles.input}
               tabIndex={4}
             />
             <Input
               title="Database name"
-              onChange={(v) => connOptions.current[connType].dbName = v}
+              onChange={(v) => connOptsRef.current[connType].dbName = v}
               type={EInputType.text}
               className={styles.input}
               tabIndex={5}
