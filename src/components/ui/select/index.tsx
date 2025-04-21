@@ -5,7 +5,6 @@ import styles from './styles.module.css'
 export function Select<T extends string> (props: {
     onChange: (value: T) => void,
     value?: T,
-    type: HTMLInputTypeAttribute,
     title: string,
     options: {
         value: T,

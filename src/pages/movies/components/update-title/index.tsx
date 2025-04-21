@@ -30,7 +30,7 @@ export function UpdateMovie({ data, ...props }: {
       onEscape={onClose}
       keyHandler={props.handleKeyboard}
     />
-    <Select autoFocus tabIndex={0} className={styles.input} title="Type" type="" value={data.current.status} onChange={(v) => data.current.status = v} options={[
+    <Select autoFocus tabIndex={0} className={styles.input} title="Type" value={data.current.status} onChange={(v) => data.current.status = v} options={[
       { value: EDataGroups.planned,   label: "Planned",   },
       { value: EDataGroups.completed, label: "Completed", },
     ]} />
