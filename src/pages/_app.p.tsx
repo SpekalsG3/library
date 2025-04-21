@@ -6,6 +6,7 @@ import '@styles/variables.css';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import { LayersProvider } from "../components/ux/layers";
+import {LocalStorageProvider} from "../utils/use-local-storage";
 
 export default function App ({
     pageProps,
@@ -22,9 +23,11 @@ export default function App ({
         <meta name="theme-color" content="#ffffff" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
       </Head>
-      <LayersProvider>
-        <Component {...pageProps} />
-      </LayersProvider>
+      <LocalStorageProvider>
+        <LayersProvider>
+          <Component {...pageProps} />
+        </LayersProvider>
+      </LocalStorageProvider>
     </>
   );
 }
