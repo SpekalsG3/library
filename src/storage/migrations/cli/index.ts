@@ -1,5 +1,5 @@
-import { MainCommand } from "./commands";
-import {StoragePG} from "../../postgres";
+import {MainCommand} from "./commands";
+import {EKnexClients, StorageKnex} from "../../postgres";
 
 async function cli() {
   const argv = process.argv;
@@ -21,7 +21,7 @@ async function cli() {
   }
   const name = commandName.join(' ');
 
-  const db = new StoragePG({
+  const db = new StorageKnex(EKnexClients.Postgres, {
     user: "postgres",
     password: "asdf",
     host: "127.0.0.1",

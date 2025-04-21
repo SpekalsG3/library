@@ -7,6 +7,7 @@ export interface IStorageMigration {
 }
 
 export interface IStorageAdapter {
+  try_connection(): Promise<void>;
   close(): Promise<void>;
   // TODO: this is used only in migrations because not idea how to generalize them but should
   //       can recreate Knex interface partly but damn...

@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+import { knex, Knex } from "knex";
 import {IStorageAdapter} from "../types";
 import {IMigrationHistory, MigrationHistory, MigrationLock} from "../entities";
 
@@ -10,23 +10,39 @@ export interface IOptionsPG {
   dbName: string,
 }
 
-export class StoragePG implements IStorageAdapter {
+export interface IOptionsSQLite3 {
+  filename: string,
+  flags?: string[],
+  debug?: boolean,
+}
+
+export enum EKnexClients {
+  Postgres = "pg",
+  SQLite3 = "sqlite3",
+}
+
+export interface IKnexOptions {
+  [EKnexClients.Postgres]: IOptionsPG,
+  [EKnexClients.SQLite3]: IOptionsSQLite3,
+}
+
+export class StorageKnex<T extends EKnexClients> implements IStorageAdapter {
   private readonly schema = "public";
   private readonly knex: Knex
   private tx: Knex.Transaction | null
 
-  public constructor(options: IOptionsPG) {
+  public constructor(
+    client: T,
+    opts: IKnexOptions[T],
+  ) {
     this.tx = null;
-    this.knex = require('knex')({
-      client: "pg",
-      connection: {
-        user: options.user,
-        password: options.password,
-        host: options.host,
-        port: options.port,
-        db: options.dbName,
-      }
+    this.knex = knex({
+      client: client,
+      connection: opts,
     });
+  }
+  public async try_connection(): Promise<void> {
+    return this.knex.select("true");
   }
   public async close(): Promise<void> {
     return this.knex.destroy();
