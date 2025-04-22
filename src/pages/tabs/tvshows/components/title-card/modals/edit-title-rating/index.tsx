@@ -4,7 +4,7 @@ import styles from './styles.module.css'
 import { EDataGroups } from "@api/types";
 import { IEditTvShowReq } from "@api/tvshows/[id].p";
 import {CachedUseFetch} from "../../../../../../../utils/cached-use-fetch";
-import {TVShow} from "../../../../../../../entities/tvshows";
+import {TVShowDTO} from "../../../../../../../entities/tv-shows";
 import {myRequest, MyRequestError, MyRequestMethods} from "../../../../../../../utils/request";
 import {EInputType, Input} from "@ui-kit/ui/input";
 import { ModalElement } from "@ui-kit/ux/layers/element";
@@ -13,10 +13,10 @@ import { KeybindingLayer } from "@ui-kit/ux/layers";
 
 export function EditTitleRating (props: {
     onClose: () => void,
-    cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShow }>
-    itemData: TVShow,
+    cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShowDTO }>
+    itemData: TVShowDTO,
 }) {
-    const newScore = useRef<TVShow['score']>(props.itemData.score)
+    const newScore = useRef<TVShowDTO['score']>(props.itemData.score)
 
     const editItem = async () => {
         const data: IEditTvShowReq = {

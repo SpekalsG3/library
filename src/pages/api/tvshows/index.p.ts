@@ -3,9 +3,9 @@ import { handler } from '../utils/handler'
 import { EDataGroups, IRequestResponseSuccess } from '../types';
 import { runChecks } from '../utils/run-checks';
 import { isValidUrl } from "../utils/is-valid-url";
-import { TVShow, TVShowEditable, TvShowDbManager } from "../../../entities/tvshows";
-import { CinemaGenresDBManager } from "../../../entities/cinema-genres";
-import { CinemaTagsDBManager } from "../../../entities/cinema-tags";
+import { TVShowDTO, TVShowDTOEditable, TvShowDbManager } from "../../../entities/tv-shows";
+import { CinemaGenresDB } from "../../../entities/cinema-genres";
+import { CinemaTagsDB } from "../../../entities/cinema-tags";
 import { DBEntityManager } from "../../../entities/interface";
 import { TVShowsGenresDBManager } from "../../../entities/tv-shows-genres-array";
 import { TVShowsTagsDBManager } from "../../../entities/tv-shows-tags-array";
@@ -84,9 +84,9 @@ async function get (
     }, {});
 
     const data = tvshows.reduce<{
-        [id: string]: TVShow,
+        [id: string]: TVShowDTO,
     }>((acc, data) => {
-        const item: TVShow = {
+        const item: TVShowDTO = {
             ...data.current,
             tags: tags[data.current.id] ?? [],
             genres: genres[data.current.id] ?? [],
@@ -102,7 +102,7 @@ async function get (
       });
 }
 
-export function validateEditItemData(item: Partial<TVShowEditable>): TVShowEditable {
+export function validateEditItemData(item: Partial<TVShowDTOEditable>): TVShowDTOEditable {
     runChecks([
         [item !== undefined, `'body.item_data' has to be json`],
         [item.status !== undefined && CTvShowGroups.includes(item.status), `'item.status' has to be one of '${CTvShowGroups.join("','")}'`],
@@ -131,7 +131,7 @@ export function validateEditItemData(item: Partial<TVShowEditable>): TVShowEdita
 }
 
 export interface ICreateTvSHowItemReq {
-    item: TVShowEditable,
+    item: TVShowDTOEditable,
 }
 
 function validateCreateBody (body: ICreateTvSHowItemReq): ICreateTvSHowItemReq {
@@ -187,8 +187,8 @@ async function post (
                 await arrayTable.insertBulk(listInserts);
             }
         }
-        await updateArray(body.item.genres, CinemaGenresDBManager, TVShowsGenresDBManager, (id) => ({ tv_show_id: tvshowId, genre_id: id, }));
-        await updateArray(body.item.tags,  CinemaTagsDBManager, TVShowsTagsDBManager, (id) => ({ tv_show_id: tvshowId, tag_id: id, }));
+        await updateArray(body.item.genres, CinemaGenresDB, TVShowsGenresDBManager, (id) => ({ tv_show_id: tvshowId, genre_id: id, }));
+        await updateArray(body.item.tags,  CinemaTagsDB, TVShowsTagsDBManager, (id) => ({ tv_show_id: tvshowId, tag_id: id, }));
     } catch (e) {
         await db.exec("ROLLBACK");
         throw e;

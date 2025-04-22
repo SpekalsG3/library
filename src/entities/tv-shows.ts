@@ -1,9 +1,24 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
 import { EDataGroups } from "@api/types";
-import {CTvShowGroups} from "@api/tvshows/index.p";
+import {CTvShowGroups, fromSeasonList, toSeasonList} from "@api/tvshows/index.p";
 
 export const TvShowDbManager = new DBEntityManager(
   "tv_shows",
+  {
+    id: "id",
+    status: "status",
+    title: "title",
+    cover_url: "cover_url",
+    notes: "notes",
+    score: "score",
+    rewatched_times: "rewatched_times",
+    episodes_count: "episodes_count",
+    avg_ep_len_min: "avg_ep_len_min",
+    last_watched_season: "last_watched_season",
+    last_watched_episode: "last_watched_episode",
+    created_at: "created_at",
+    updated_at: "updated_at",
+  },
   {
     id: {
       dbType: EDBFieldTypes.Integer,
@@ -65,22 +80,22 @@ export const TvShowDbManager = new DBEntityManager(
     created_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
-      deserializeWith: (s) => s.getTime(),
-      serializeWith: (s) => new Date(s as number),
+      deserializeWith: (s) => new Date(s as number),
+      serializeWith: (s) => s.getTime(),
     },
     updated_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
-      deserializeWith: (s) => s.getTime(),
-      serializeWith: (s) => new Date(s as number),
+      deserializeWith: (s) => new Date(s as number),
+      serializeWith: (s) => s.getTime(),
     },
   },
 );
 
-export type TVShowDbEntity = ReturnType<typeof TvShowDbManager['getEntity']>;
-export type TVShow = TVShowDbEntity['current'] & {
+export type TVShowDb = ReturnType<typeof TvShowDbManager['getEntity']>;
+export type TVShowDTO = TVShowDb & {
   tags: string[],
   genres: string[],
 }
 
-export type TVShowEditable = Omit<TVShow, 'id' | 'created_at' | 'updated_at'>;
+export type TVShowDTOEditable = Omit<TVShowDTO, 'id' | 'created_at' | 'updated_at'>;

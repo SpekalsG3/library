@@ -1,12 +1,12 @@
 import React from "react";
-import {TVShow} from "../../../entities/tvshows";
+import {TVShowDTO} from "../../../entities/tv-shows";
 import {EDataGroups} from "@api/types";
 import { CardsPanel } from "@ui-kit/panels/cards";
 import { Title } from "./components/title-card";
 import { AddNewTvShowModal } from "./components/title-card/modals/add-new-title";
 
 export default function TvShowsPage () {
-  return <CardsPanel<TVShow, EDataGroups>
+  return <CardsPanel<TVShowDTO, EDataGroups>
     defaultGroup={EDataGroups.watching}
     fetchPathname={"/api/tvshows"}
     groups={[

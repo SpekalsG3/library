@@ -25,3 +25,7 @@
     - [ ] dynamic entity tables
   - [ ] Search
   - [ ] Action feedback popup (error, success)
+- Bugs
+  - [ ] Movies/TVShows tags/genres array table gets populated with
+duplicates on update because there's no check if existing link
+already exists

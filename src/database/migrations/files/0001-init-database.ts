@@ -7,16 +7,16 @@ export default <Migration> {
     const knex = DB.getKnex();
 
     await knex.raw("CREATE TABLE cinema_genres (" +
-      "id INTEGER PRIMARY KEY NOT NULL" +
+      "id serial PRIMARY KEY NOT NULL" +
       ",name TEXT NOT NULL" +
       ")");
     await knex.raw("CREATE TABLE cinema_tags (" +
-      "id INTEGER PRIMARY KEY NOT NULL" +
+      "id serial PRIMARY KEY NOT NULL" +
       ",name TEXT NOT NULL" +
       ")");
 
     await knex.raw("CREATE TABLE movies (" +
-      "id INTEGER PRIMARY KEY NOT NULL" +
+      "id serial PRIMARY KEY NOT NULL" +
       ",status TEXT NOT NULL" +
       ",title TEXT NOT NULL" +
       ",cover_url TEXT NOT NULL" +
@@ -26,14 +26,14 @@ export default <Migration> {
       ",len_min INTEGER NOT NULL" +
       ")");
     await knex.raw("CREATE TABLE movies_tags_array (" +
-      "id INTEGER PRIMARY KEY" +
+      "id serial PRIMARY KEY" +
       ",movie_id INTEGER" +
       ",tag_id INTEGER" +
       ",FOREIGN KEY(movie_id) REFERENCES movies(id)" +
       ",FOREIGN KEY(tag_id) REFERENCES cinema_tags(id)" +
       ")");
     await knex.raw("CREATE TABLE movies_genres_array (" +
-      "id INTEGER PRIMARY KEY" +
+      "id serial PRIMARY KEY" +
       ",movie_id INTEGER" +
       ",genre_id INTEGER" +
       ",FOREIGN KEY(movie_id) REFERENCES movies(id)" +
@@ -41,7 +41,7 @@ export default <Migration> {
       ")");
 
     await knex.raw("CREATE TABLE tv_shows (" +
-      "id INTEGER PRIMARY KEY NOT NULL" +
+      "id serial PRIMARY KEY NOT NULL" +
       ",status TEXT NOT NULL" +
       ",title TEXT NOT NULL" +
       ",cover_url TEXT NOT NULL" +
@@ -54,14 +54,14 @@ export default <Migration> {
       ",last_watched_episode INTEGER" +
       ")");
     await knex.raw("CREATE TABLE tv_shows_tags_array (" +
-      "id INTEGER PRIMARY KEY" +
+      "id serial PRIMARY KEY" +
       ",tv_show_id INTEGER" +
       ",tag_id INTEGER" +
       ",FOREIGN KEY(tv_show_id) REFERENCES tv_shows(id)" +
       ",FOREIGN KEY(tag_id) REFERENCES cinema_tags(id)" +
       ")");
     await knex.raw("CREATE TABLE tv_shows_genres_array (" +
-      "id INTEGER PRIMARY KEY" +
+      "id serial PRIMARY KEY" +
       ",tv_show_id INTEGER" +
       ",genre_id INTEGER" +
       ",FOREIGN KEY(tv_show_id) REFERENCES tv_shows(id)" +

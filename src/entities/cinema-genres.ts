@@ -1,7 +1,11 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
 
-export const CinemaGenresDBManager = new DBEntityManager(
+export const CinemaGenresDB = new DBEntityManager(
   "cinema_genres",
+  {
+    id: "id",
+    name: "name",
+  } as const,
   {
     id: {
       dbType: EDBFieldTypes.Integer,
@@ -12,5 +16,5 @@ export const CinemaGenresDBManager = new DBEntityManager(
       dbType: EDBFieldTypes.String,
       isNullable: false,
     },
-  },
+  } as const,
 );

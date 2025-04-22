@@ -8,12 +8,12 @@ export default <Migration> {
 
     const now = Date.now();
 
-    await knex.raw("ALTER TABLE movies ADD created_at INTEGER");
-    await knex.raw("ALTER TABLE movies ADD updated_at INTEGER");
+    await knex.raw("ALTER TABLE movies ADD created_at BIGINT");
+    await knex.raw("ALTER TABLE movies ADD updated_at BIGINT");
     await knex.raw(`UPDATE movies SET created_at = ${now} + id, updated_at = ${now} + id`);
 
-    await knex.raw("ALTER TABLE tv_shows ADD created_at INTEGER");
-    await knex.raw("ALTER TABLE tv_shows ADD updated_at INTEGER");
+    await knex.raw("ALTER TABLE tv_shows ADD created_at BIGINT");
+    await knex.raw("ALTER TABLE tv_shows ADD updated_at BIGINT");
     await knex.raw(`UPDATE tv_shows SET created_at = ${now} + id, updated_at = ${now} + id`);
 
     // Postgres

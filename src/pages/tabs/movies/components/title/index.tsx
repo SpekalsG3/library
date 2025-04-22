@@ -5,12 +5,12 @@ import { type ReactNode, useState } from "react";
 import { EditTitle } from "./modals/edit-title";
 import {CachedUseFetch} from "../../../../../utils/cached-use-fetch";
 import {EDataGroups} from "@api/types";
-import {Movie} from "../../../../../entities/movies";
+import {MovieDTO} from "../../../../../entities/movies";
 
 export function Title ({ itemData, ...props }: {
   className?: string,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: Movie }>
-  itemData: Movie,
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: MovieDTO }>
+  itemData: MovieDTO,
 }) {
   const [modal, setModal] = useState<ReactNode | null>(null);
 

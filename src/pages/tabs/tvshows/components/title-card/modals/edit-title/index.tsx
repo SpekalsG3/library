@@ -5,7 +5,7 @@ import { UpdateTvShow } from "../../../update-title";
 import styles from "./styles.module.css"
 import { IEditTvShowReq } from "@api/tvshows/[id].p";
 import {CachedUseFetch} from "../../../../../../../utils/cached-use-fetch";
-import {TVShow} from "../../../../../../../entities/tvshows";
+import {TVShowDTO} from "../../../../../../../entities/tv-shows";
 import {myRequest, MyRequestError, MyRequestMethods} from "../../../../../../../utils/request";
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import Button from "@ui-kit/ui/button";
@@ -13,10 +13,10 @@ import { KeybindingLayer } from "@ui-kit/ux/layers";
 
 export function EditTitle(props: {
   onClose: () => void,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShow }>
-  itemData: TVShow,
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShowDTO }>
+  itemData: TVShowDTO,
 }) {
-  const data = useRef<TVShow>(props.itemData);
+  const data = useRef<TVShowDTO>(props.itemData);
   const [confirmationModal, setConfirmationModal] = useState<ReactNode | null>(null);
 
   const editItem = async () => {

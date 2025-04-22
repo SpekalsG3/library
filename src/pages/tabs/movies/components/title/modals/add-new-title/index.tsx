@@ -5,17 +5,17 @@ import { MyRequestError, MyRequestMethods, myRequest } from "../../../../../../.
 import Button from "@ui-kit/ui/button";
 import { EDataGroups } from "@api/types";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
-import { Movie } from "../../../../../../../entities/movies";
+import { MovieDTO } from "../../../../../../../entities/movies";
 import {ICreateMovieItemReq} from "@api/movies/index.p";
 import { UpdateMovie } from "../../../update-title";
 
 export function AddNewMovie(props: {
   onClose: () => void,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: Movie }>
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: MovieDTO }>
 }) {
-  const data = useRef<Movie>({
+  const data = useRef<MovieDTO>({
     status: props.cachedData.getCurrentKey(),
-  } as Partial<Movie> as Movie);
+  } as Partial<MovieDTO> as MovieDTO);
 
   const saveNewItem = async () => {
     const body: ICreateMovieItemReq = {

@@ -1,12 +1,12 @@
 import { Title } from './components/title'
 import React from "react";
-import {Movie} from "../../../entities/movies";
+import {MovieDTO} from "../../../entities/movies";
 import {EDataGroups} from "@api/types";
 import { CardsPanel } from '@ui-kit/panels/cards';
 import { AddNewMovie } from './components/title/modals/add-new-title';
 
 export default function MoviesPage() {
-  return <CardsPanel<Movie, EDataGroups>
+  return <CardsPanel<MovieDTO, EDataGroups>
     defaultGroup={EDataGroups.planned}
     fetchPathname={"/api/movies"}
     groups={[

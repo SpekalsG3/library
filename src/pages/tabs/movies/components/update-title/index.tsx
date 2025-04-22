@@ -7,10 +7,10 @@ import { Select } from "@ui-kit/ui/select";
 import { EDataGroups } from "@api/types";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
 import { ModalElement } from "@ui-kit/ux/layers/element";
-import { Movie } from "../../../../../entities/movies";
+import { MovieDTO } from "../../../../../entities/movies";
 
 export function UpdateMovie({ data, ...props }: {
-  data: MutableRefObject<Movie>,
+  data: MutableRefObject<MovieDTO>,
   onClose: () => void,
   buttons: ReactNode,
   handleKeyboard: (e: KeyboardEvent) => void,

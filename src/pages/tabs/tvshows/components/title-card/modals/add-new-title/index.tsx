@@ -5,18 +5,18 @@ import { EDataGroups } from "@api/types";
 import { MyRequestError, MyRequestMethods, myRequest } from "../../../../../../../utils/request";
 import Button from "@ui-kit/ui/button";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
-import { TVShow } from "../../../../../../../entities/tvshows";
+import { TVShowDTO } from "../../../../../../../entities/tv-shows";
 import {ICreateTvSHowItemReq} from "@api/tvshows/index.p";
 import { UpdateTvShow } from "../../../update-title";
 
 export function AddNewTvShowModal(props: {
   onClose: () => void,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShow }>
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShowDTO }>
 }) {
-  const data = useRef<TVShow>({
+  const data = useRef<TVShowDTO>({
     status: props.cachedData.getCurrentKey(),
     episodes_count: [],
-  } as Partial<TVShow> as TVShow);
+  } as Partial<TVShowDTO> as TVShowDTO);
 
   const saveNewItem = async () => {
     const body: ICreateTvSHowItemReq = {

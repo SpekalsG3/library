@@ -8,15 +8,15 @@ import Button from "@ui-kit/ui/button";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
-import { Movie } from "../../../../../../../entities/movies";
+import { MovieDTO } from "../../../../../../../entities/movies";
 import { UpdateMovie } from "../../../update-title";
 
 export function EditTitle(props: {
   onClose: () => void,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: Movie }>
-  itemData: Movie,
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: MovieDTO }>
+  itemData: MovieDTO,
 }) {
-  const data = useRef<Movie>(props.itemData);
+  const data = useRef<MovieDTO>(props.itemData);
   const [confirmationModal, setConfirmationModal] = useState<ReactNode | null>(null);
 
   const editItem = async () => {

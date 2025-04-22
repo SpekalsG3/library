@@ -1,7 +1,6 @@
-export interface IRequestResponseSuccess<Data> {
+export type IRequestResponseSuccess<Data extends any> = {
     success: true,
-    data: Data,
-}
+} & (undefined extends Data ? {} : { data: Data })
 
 export enum EDataGroups {
     watching = "watching",

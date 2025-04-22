@@ -1,7 +1,12 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
 
-export const MoviesTagsDBManager = new DBEntityManager(
+export const MoviesTagsDB = new DBEntityManager(
   "movies_tags_array",
+  {
+    id: "id",
+    movie_id: "movie_id",
+    tag_id: "tag_id",
+  } as const,
   {
     id: {
       dbType: EDBFieldTypes.Integer,

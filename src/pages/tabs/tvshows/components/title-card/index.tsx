@@ -7,9 +7,9 @@ import { CachedUseFetch } from "../../../../../utils/cached-use-fetch";
 import { EditTitleRewatch } from "./modals/edit-title-rewatch";
 import { EditTitleRating} from "./modals/edit-title-rating";
 import { type ReactNode, useState } from "react";
-import { TVShow } from "../../../../../entities/tvshows";
+import { TVShowDTO } from "../../../../../entities/tv-shows";
 
-function calculateScore(item: TVShow): number | null {
+function calculateScore(item: TVShowDTO): number | null {
   let sum: number | undefined;
   const score = item.score ?? {};
   if (score !== undefined && Object.keys(score).length > 0) {
@@ -32,7 +32,7 @@ function calculateScore(item: TVShow): number | null {
   }
 }
 
-function calculateRewatch(item: TVShow): number | null {
+function calculateRewatch(item: TVShowDTO): number | null {
   let sum: number | undefined;
   const rtimes = item.rewatched_times ?? {};
   if (rtimes !== undefined && Object.keys(rtimes).length > 0) {
@@ -57,8 +57,8 @@ function calculateRewatch(item: TVShow): number | null {
 
 export function Title ({ itemData, ...props }: {
   className?: string,
-  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShow }>
-  itemData: TVShow,
+  cachedData: CachedUseFetch<EDataGroups, { [id: string]: TVShowDTO }>
+  itemData: TVShowDTO,
 }) {
   const [modal, setModal] = useState<ReactNode | null>(null);
 

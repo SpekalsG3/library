@@ -2,8 +2,20 @@ import { DBEntityManager, EDBFieldTypes } from "./interface";
 import { EDataGroups } from "@api/types";
 import {CTvShowGroups} from "@api/tvshows/index.p";
 
-export const MoviesDBManager = new DBEntityManager(
+export const MoviesDB = new DBEntityManager(
   "movies",
+  {
+    id: "id",
+    status: "status",
+    title: "title",
+    cover_url: "cover_url",
+    notes: "notes",
+    score: "score",
+    rewatched_times: "rewatched_times",
+    len_min: "len_min",
+    created_at: "created_at",
+    updated_at: "updated_at",
+  } as const,
   {
     id: {
       dbType: EDBFieldTypes.Integer,
@@ -15,7 +27,7 @@ export const MoviesDBManager = new DBEntityManager(
       isNullable: false,
       deserializeWith: (s) => {
         if (!CTvShowGroups.includes(s as any)) {
-          throw new Error('Unknown status')
+          throw new Error('Unknown status');
         }
         return s as EDataGroups;
       }
@@ -47,21 +59,21 @@ export const MoviesDBManager = new DBEntityManager(
     created_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
-      deserializeWith: (s) => s.getTime(),
-      serializeWith: (s) => new Date(s as number),
+      deserializeWith: (s) => new Date(s as number),
+      serializeWith: (s) => s.getTime(),
     },
     updated_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
-      deserializeWith: (s) => s.getTime(),
-      serializeWith: (s) => new Date(s as number),
+      deserializeWith: (s) => new Date(s as number),
+      serializeWith: (s) => s.getTime(),
     },
   },
 );
 
-export type MovieDbEntity = ReturnType<typeof MoviesDBManager['getEntity']>;
-export type Movie = MovieDbEntity['current'] & {
+export type MovieDbEntity = ReturnType<typeof MoviesDB['getEntity']>;
+export type MovieDTO = MovieDbEntity & {
   tags: string[],
   genres: string[],
 }
-export type MovieEditable = Omit<Movie, 'id' | 'created_at' | 'updated_at'>;
+export type MovieDTOEditable = Omit<MovieDTO, 'id' | 'created_at' | 'updated_at'>;
