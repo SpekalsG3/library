@@ -2,7 +2,6 @@ import {IDBAdapter} from "@database/types";
 import {Handle, handler} from "../utils/handler";
 import {EKnexClients, IKnexOptions, DBKnex} from "@database/postgres";
 import {runChecks} from "../utils/run-checks";
-import {global} from "styled-jsx/css";
 
 export enum ConnectionTypes {
   Postgres = "postgres",
@@ -18,7 +17,7 @@ export interface ConnectionOptions<T extends ConnectionTypes> {
 }
 
 declare global {
-  export let DB: null | {
+  var DB: null | {
     opts: ConnectionOptions<ConnectionTypes>,
     db: IDBAdapter,
   };
