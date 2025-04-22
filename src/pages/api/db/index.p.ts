@@ -1,22 +1,9 @@
-import {IDBAdapter} from "@database/types";
+import {ConnectionOptions, ConnectionTypes, IDBAdapter} from "@database/types";
 import {Handle, handler} from "../utils/handler";
-import {EKnexClients, IKnexOptions, DBKnex} from "src/database/knex";
 import {runChecks} from "../utils/run-checks";
 import {MigrationsList} from "@database/migrations/files";
-import {MigrationHistoryDB, MigrationHistoryDBEntity} from "../../../entities/migration-history";
-
-export enum ConnectionTypes {
-  Postgres = "postgres",
-  SQLite3 = "sqlite3"
-}
-interface ConnTypeToOpts {
-  [ConnectionTypes.Postgres]: IKnexOptions[EKnexClients.Postgres],
-  [ConnectionTypes.SQLite3]: IKnexOptions[EKnexClients.SQLite3],
-}
-export interface ConnectionOptions<T extends ConnectionTypes> {
-  type: T,
-  options: ConnTypeToOpts[T],
-}
+import {MigrationHistoryDBEntity} from "../../../entities/migration-history";
+import {tryConnOpts} from "@database/utils";
 
 declare global {
   var DB: null | {
@@ -155,21 +142,9 @@ const post: Handle<ISaveConnectionRes> = async function (req, res) {
   }
 
   if (toReconnect) {
-    let db!: IDBAdapter;
-    switch (opts.type) {
-      case ConnectionTypes.Postgres: {
-        db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
-        break;
-      }
-      case ConnectionTypes.SQLite3: {
-        db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
-        break;
-      }
-    }
-
     global.DB = {
       opts,
-      db,
+      db: tryConnOpts(opts),
     };
 
     message = "Successfully connected";

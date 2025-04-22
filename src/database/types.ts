@@ -1,5 +1,7 @@
 import {Knex} from "knex";
 
+import {DBKnex, EKnexClients, IKnexOptions} from "./knex";
+
 export interface IDBMigration {
   id: number;
   public_id: string;
@@ -25,4 +27,17 @@ export interface IDBAdapter {
 
   migrationsCreate(publicId: string): Promise<void>;
   migrationsDelete(publicId: string): Promise<number>;
+}
+
+export enum ConnectionTypes {
+  Postgres = "postgres",
+  SQLite3 = "sqlite3"
+}
+interface ConnTypeToOpts {
+  [ConnectionTypes.Postgres]: IKnexOptions[EKnexClients.Postgres],
+  [ConnectionTypes.SQLite3]: IKnexOptions[EKnexClients.SQLite3],
+}
+export interface ConnectionOptions<T extends ConnectionTypes> {
+  type: T,
+  options: ConnTypeToOpts[T],
 }

@@ -27,6 +27,7 @@
     "@types/pg": "^8.11.13",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv": "^16.5.0",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
     "ts-node": "^10.9.2",

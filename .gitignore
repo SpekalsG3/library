@@ -3,3 +3,4 @@ node_modules
 .next
 .DS_store
 sqlite3.db
+.env

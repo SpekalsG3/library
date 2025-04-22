@@ -1,5 +1,9 @@
+import 'dotenv/config'
+
+import * as process from "node:process";
+
 import {MainCommand} from "./commands";
-import {DBKnex, EKnexClients} from "../../knex";
+import {tryConnOpts} from "../../utils";
 
 async function cli() {
   const argv = process.argv;
@@ -21,16 +25,12 @@ async function cli() {
   }
   const name = commandName.join(' ');
 
-  // const db = new DBKnex(EKnexClients.Postgres, {
-  //   user: "postgres",
-  //   password: "asdf",
-  //   host: "127.0.0.1",
-  //   port: 5432,
-  //   dbName: "media_library",
-  // });
-  const db = new DBKnex(EKnexClients.SQLite3, {
-    filename: "/Users/spekalsg3/home/projects/personal/media_library/sqlite3.db",
-  })
+  if (!process.env.CLI_DB_OPTIONS) {
+    throw new Error("Env 'CLI_DB_OPTIONS' is not provided");
+  }
+
+  const opts = JSON.parse(process.env.CLI_DB_OPTIONS);
+  const db = tryConnOpts(opts);
 
   let error: Error | null = null
   try {

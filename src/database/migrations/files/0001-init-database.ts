@@ -28,9 +28,9 @@ export default <Migration> {
       .createTable(MoviesDB.tableName, function (table) {
         table.increments(MoviesDB.fields.id).primary().notNullable();
         table.enum(MoviesDB.fields.status, CMovieGroups).notNullable();
-        table.string(MoviesDB.fields.title).notNullable();
-        table.string(MoviesDB.fields.cover_url).notNullable();
-        table.string(MoviesDB.fields.notes);
+        table.text(MoviesDB.fields.title).notNullable();
+        table.text(MoviesDB.fields.cover_url).notNullable();
+        table.text(MoviesDB.fields.notes);
         table.smallint(MoviesDB.fields.len_min).notNullable();
         table.smallint(MoviesDB.fields.score);
         table.smallint(MoviesDB.fields.rewatched_times);
@@ -48,9 +48,9 @@ export default <Migration> {
       .createTable(TvShowsDB.tableName, function (table) {
         table.increments(TvShowsDB.fields.id).primary().notNullable();
         table.enum(TvShowsDB.fields.status, CTvShowGroups).notNullable();
-        table.string(TvShowsDB.fields.title).notNullable();
-        table.string(TvShowsDB.fields.cover_url).notNullable();
-        table.string(TvShowsDB.fields.notes);
+        table.text(TvShowsDB.fields.title).notNullable();
+        table.text(TvShowsDB.fields.cover_url).notNullable();
+        table.text(TvShowsDB.fields.notes);
         table.smallint(TvShowsDB.fields.avg_ep_len_min).notNullable();
         table.string(TvShowsDB.fields.score);
         table.string(TvShowsDB.fields.rewatched_times);
