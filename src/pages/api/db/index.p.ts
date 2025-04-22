@@ -2,6 +2,7 @@ import {IDBAdapter} from "@database/types";
 import {Handle, handler} from "../utils/handler";
 import {EKnexClients, IKnexOptions, DBKnex} from "@database/postgres";
 import {runChecks} from "../utils/run-checks";
+import {global} from "styled-jsx/css";
 
 export enum ConnectionTypes {
   Postgres = "postgres",
@@ -16,14 +17,12 @@ export interface ConnectionOptions<T extends ConnectionTypes> {
   options: ConnTypeToOpts[T],
 }
 
-export const DB: {
-  current: null | {
+declare global {
+  export let DB: null | {
     opts: ConnectionOptions<ConnectionTypes>,
     db: IDBAdapter,
-  },
-} = {
-  current: null,
-};
+  };
+}
 
 function validateConnOpts(body: any): ConnectionOptions<ConnectionTypes> {
   if (body == null) {
@@ -101,16 +100,16 @@ function areSameOpts(lhs: ConnectionOptions<ConnectionTypes>, rhs: ConnectionOpt
 const post: Handle<string> = async function (req, res) {
   const opts = validateConnOpts(req.body);
 
-  if (DB.current) {
-    if (areSameOpts(DB.current.opts, opts)) {
+  if (global.DB) {
+    if (areSameOpts(global.DB.opts, opts)) {
       return res.json({
         success: true,
         data: "DB connection is already initialized with same db and user",
       });
     }
 
-    await DB.current.db.close();
-    DB.current = null;
+    await global.DB.db.close();
+    global.DB = null;
   }
 
   let db!: IDBAdapter;
@@ -127,10 +126,11 @@ const post: Handle<string> = async function (req, res) {
 
   await db.try_connection();
 
-  DB.current = {
+  global.DB = {
     opts,
     db,
   };
+  console.log('global.DB set', global.DB?.opts);
 
   res.json({
     success: true,
