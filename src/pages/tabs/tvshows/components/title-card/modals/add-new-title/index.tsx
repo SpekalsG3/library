@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
 
 import styles from './styles.module.css'
-import { EDataGroups } from "@api/types";
 import { MyRequestError, MyRequestMethods, myRequest } from "../../../../../../../utils/request";
 import Button from "@ui-kit/ui/button";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
 import { TVShowDTO } from "../../../../../../../entities/tv-shows";
 import {ICreateTvSHowItemReq} from "@api/tvshows/index.p";
 import { UpdateTvShow } from "../../../update-title";
+import {EDataGroups} from "../../../../../../../entities/types";
 
 export function AddNewTvShowModal(props: {
   onClose: () => void,

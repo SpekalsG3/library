@@ -1,5 +1,6 @@
 import {Handle, handler} from "@api/utils/handler";
 import {MigrationsList} from "@database/migrations/files";
+import {MigrationHistoryDB} from "../../../entities/migration-history";
 
 export interface IApplyMigrationsRes {
   message: string,
@@ -9,6 +10,22 @@ export interface IApplyMigrationsRes {
 const post: Handle<IApplyMigrationsRes> = async function (req, res) {
   if (!global.DB) {
     throw new Error("DB is not initialized");
+  }
+
+  await global.DB.db.begin();
+  try {
+    try {
+      await global.DB.db.getKnex()
+        .table(MigrationHistoryDB.tableName)
+        .select()
+        .limit(0);
+    } catch (_) {
+      await global.DB.db.migrationsInit();
+    }
+    await global.DB.db.commit();
+  } catch (e) {
+    await global.DB.db.rollback();
+    throw e;
   }
 
   const appliedMigrations = await global.DB.db.migrationsAll();

@@ -1,8 +1,9 @@
 import {IDBAdapter} from "@database/types";
 import {Handle, handler} from "../utils/handler";
-import {EKnexClients, IKnexOptions, DBKnex} from "@database/postgres";
+import {EKnexClients, IKnexOptions, DBKnex} from "src/database/knex";
 import {runChecks} from "../utils/run-checks";
 import {MigrationsList} from "@database/migrations/files";
+import {MigrationHistoryDB, MigrationHistoryDBEntity} from "../../../entities/migration-history";
 
 export enum ConnectionTypes {
   Postgres = "postgres",
@@ -35,33 +36,52 @@ function validateConnOpts(body: any): ConnectionOptions<ConnectionTypes> {
     [typeof body.options === "object", "Field 'body.options' should be an object"],
   ]);
 
-  const options = {};
+  let options = {};
   switch (body.type as ConnectionTypes) {
     case ConnectionTypes.Postgres: {
-      options.user = body.options.user;
-      options.password = body.options.password;
-      options.host = body.options.host;
-      options.port = Number(body.options.port);
-      options.dbName = body.options.dbName;
+      // @ts-ignore
+      const opts: ConnectionOptions<ConnectionTypes.Postgres>['options'] = {};
+
+      opts.user = body.options.user;
+      opts.password = body.options.password;
+      opts.host = body.options.host;
+      opts.port = Number(body.options.port);
+      opts.dbName = body.options.dbName;
 
       runChecks([
-        [options.user, "Field 'body.options.user' should be a string"],
-        [options.password, "Field 'body.options.password' should be a string"],
-        [options.host, "Field 'body.options.host' should be a string"],
-        [options.port, "Field 'body.options.port' should be a number"],
-        [options.dbName, "Field 'body.options.dbName' should be a string"],
+        [typeof opts.user === "string", "Field 'body.options.user' should be a string"],
+        [opts.user.length > 0, "Field 'body.options.user' should be a non-empty string"],
+        [typeof opts.password === "string", "Field 'body.options.password' should be a string"],
+        [opts.password.length > 0, "Field 'body.options.password' should be a non-empty string"],
+        [typeof opts.host === "string", "Field 'body.options.host' should be a string"],
+        [opts.host.length > 0, "Field 'body.options.host' should be a non-empty string"],
+        [typeof opts.dbName === "string", "Field 'body.options.dbName' should be a string"],
+        [opts.dbName.length > 0, "Field 'body.options.dbName' should be a non-empty string"],
+        [!isNaN(opts.port), "Field 'body.options.port' should be a number"],
       ]);
+      options = opts;
+
       break;
     }
     case ConnectionTypes.SQLite3: {
-      throw new Error("SQLite3 not yet supported");
+      // @ts-ignore
+      const opts: ConnectionOptions<ConnectionTypes.SQLite3>['options'] = {};
+
+      opts.filename = body.options.filename;
+
+      runChecks([
+        [typeof opts.filename === "string", "Field 'body.options.filename' should be a string"],
+        [opts.filename.length > 0, "Field 'body.options.filename' should be a non-empty string"],
+      ]);
+      options = opts;
+
       break;
     }
   }
 
   return {
     type: body.type,
-    options,
+    options: options as any,
   }
 }
 
@@ -72,7 +92,9 @@ function areSameOpts(lhs: ConnectionOptions<ConnectionTypes>, rhs: ConnectionOpt
 
   switch (lhs.type) {
     case ConnectionTypes.Postgres: {
+      // @ts-ignore
       const l: ConnectionOptions<ConnectionTypes.Postgres>['options'] = lhs.options;
+      // @ts-ignore
       const r: ConnectionOptions<ConnectionTypes.Postgres>['options'] = rhs.options;
 
       const isSameDB = l.dbName === r.dbName
@@ -89,7 +111,15 @@ function areSameOpts(lhs: ConnectionOptions<ConnectionTypes>, rhs: ConnectionOpt
       break;
     }
     case ConnectionTypes.SQLite3: {
-      throw new Error("SQLite3 not yet supported");
+      // @ts-ignore
+      const l: ConnectionOptions<ConnectionTypes.SQLite3>['options'] = lhs.options;
+      // @ts-ignore
+      const r: ConnectionOptions<ConnectionTypes.SQLite3>['options'] = rhs.options;
+
+      if (l.filename === r.filename) {
+        return false;
+      }
+
       break;
     }
   }
@@ -151,7 +181,13 @@ const post: Handle<ISaveConnectionRes> = async function (req, res) {
     missing: 0,
   }
 
-  const appliedMigrations = await global.DB!.db.migrationsAll();
+  let appliedMigrations!: MigrationHistoryDBEntity[];
+
+  try {
+    appliedMigrations = await global.DB!.db.migrationsAll();
+  } catch (e) {
+    appliedMigrations = [];
+  }
 
   for (let i = 0; i < appliedMigrations.length; i++) {
     const expectedPublicId = MigrationsList[i].name;

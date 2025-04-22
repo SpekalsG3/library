@@ -13,8 +13,6 @@ export interface IOptionsPG {
 
 export interface IOptionsSQLite3 {
   filename: string,
-  flags?: string[],
-  debug?: boolean,
 }
 
 export enum EKnexClients {
@@ -28,7 +26,6 @@ export interface IKnexOptions {
 }
 
 export class DBKnex<T extends EKnexClients> implements IDBAdapter {
-  public readonly schema = "public";
   private readonly knex: Knex
   private tx: Knex.Transaction | null
 
@@ -40,6 +37,7 @@ export class DBKnex<T extends EKnexClients> implements IDBAdapter {
     this.knex = knex({
       client: client,
       connection: opts,
+      useNullAsDefault: true,
     });
   }
   public async try_connection(): Promise<void> {
@@ -75,7 +73,6 @@ export class DBKnex<T extends EKnexClients> implements IDBAdapter {
   public async migrationsInit(): Promise<void> {
     await this.getKnex()
       .schema
-      .withSchema(this.schema)
       .createTable(MigrationHistoryDB.tableName, (table) => {
         table
           .increments(MigrationHistoryDB.fields.id)

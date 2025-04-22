@@ -8,7 +8,6 @@ import {DBEntityManager} from "../../../entities/interface";
 import {MoviesGenresDB} from "../../../entities/movies-genres-array";
 import {MoviesTagsDB} from "../../../entities/movies-tags-array";
 import {CMovieGroups, EDataGroups} from "../../../entities/types";
-import {instanceOf} from "prop-types";
 
 const get: Handle<{
   [id: string]: MovieDTO,

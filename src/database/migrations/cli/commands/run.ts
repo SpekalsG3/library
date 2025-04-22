@@ -24,9 +24,9 @@ async function execute(name: string, db: IDBAdapter): Promise<void> {
 
     await db.begin();
     try {
-      await db.migrationsCreate(migration.name);
 
       await migration.up(db);
+      await db.migrationsCreate(migration.name);
 
       await db.commit();
     } catch (e) {

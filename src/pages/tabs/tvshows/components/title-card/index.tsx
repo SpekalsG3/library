@@ -1,13 +1,13 @@
 import cn from 'classnames'
 
 import styles from './title.module.css'
-import { EDataGroups, } from "@api/types";
 import { EditTitle } from "./modals/edit-title";
 import { CachedUseFetch } from "../../../../../utils/cached-use-fetch";
 import { EditTitleRewatch } from "./modals/edit-title-rewatch";
 import { EditTitleRating} from "./modals/edit-title-rating";
 import { type ReactNode, useState } from "react";
 import { TVShowDTO } from "../../../../../entities/tv-shows";
+import {EDataGroups} from "../../../../../entities/types";
 
 function calculateScore(item: TVShowDTO): number | null {
   let sum: number | undefined;

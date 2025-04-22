@@ -1,5 +1,5 @@
 import React, { ReactNode, useRef, useState } from "react";
-import { EDataGroups, IRequestResponseSuccess } from "@api/types";
+import { IRequestResponseSuccess } from "@api/types";
 import { UpdateTvShow } from "../../../update-title";
 
 import styles from "./styles.module.css"
@@ -10,6 +10,7 @@ import {myRequest, MyRequestError, MyRequestMethods} from "../../../../../../../
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import Button from "@ui-kit/ui/button";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
+import {EDataGroups} from "../../../../../../../entities/types";
 
 export function EditTitle(props: {
   onClose: () => void,
@@ -39,7 +40,6 @@ export function EditTitle(props: {
         method: MyRequestMethods.PUT,
         body: body,
       });
-      data.current.updated_at = Date.now();
       if (data.current.status === props.cachedData.getCurrentKey()) {
         props.cachedData.updateCurrentState((s) => {
           s[props.itemData.id] = data.current;

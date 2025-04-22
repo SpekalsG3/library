@@ -93,7 +93,6 @@ function el() {
     setIsLoading(false);
   }
 
-  console.log('result.migrations', result.migrations);
   return <>
     <div className={styles.main}>
       {(

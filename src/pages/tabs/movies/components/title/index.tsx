@@ -4,8 +4,8 @@ import styles from './title.module.css'
 import { type ReactNode, useState } from "react";
 import { EditTitle } from "./modals/edit-title";
 import {CachedUseFetch} from "../../../../../utils/cached-use-fetch";
-import {EDataGroups} from "@api/types";
 import {MovieDTO} from "../../../../../entities/movies";
+import {EDataGroups} from "../../../../../entities/types";
 
 export function Title ({ itemData, ...props }: {
   className?: string,

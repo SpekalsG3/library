@@ -49,9 +49,9 @@ export function LoadConnection(props: {
         options={[{
           label: "Postgres",
           value: ConnectionTypes.Postgres,
-        // }, {
-        //   label: "SQLite3",
-        //   value: ConnectionTypes.SQLite3,
+        }, {
+          label: "SQLite3",
+          value: ConnectionTypes.SQLite3,
         }]}
         onChange={setConnType}
         value={connType}
@@ -99,6 +99,20 @@ export function LoadConnection(props: {
               type={EInputType.text}
               className={styles.input}
               tabIndex={5}
+            />
+          </>
+      }
+      {
+        connType != ConnectionTypes.SQLite3
+          ? null
+          : <>
+            <Input
+              title="Local file path"
+              onChange={(v) => connOptsRef.current[connType].filename = v}
+              value={connOptsRef.current[connType].filename}
+              type={EInputType.text}
+              className={styles.input}
+              tabIndex={1}
             />
           </>
       }

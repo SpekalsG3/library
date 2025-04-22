@@ -15,7 +15,7 @@ export default function MoviesPage() {
     ]}
     renderElements={(cachedData, className) => {
       return Object.values(cachedData.getState()?.current ?? {})
-        .sort((a, b) => b.updated_at.getTime() - a.updated_at.getTime())
+        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
         .map((data) => {
         return (
           <Title

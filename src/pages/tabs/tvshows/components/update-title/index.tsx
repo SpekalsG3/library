@@ -2,7 +2,6 @@ import React, { MutableRefObject, ReactNode, useState } from "react";
 import cn from 'classnames';
 
 import styles from './styles.module.css'
-import { EDataGroups } from "@api/types";
 import {TVShowDTO} from "../../../../../entities/tv-shows";
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
@@ -10,6 +9,7 @@ import { Select } from "@ui-kit/ui/select";
 import {EInputType, Input} from "@ui-kit/ui/input";
 import { EnumInput } from "@ui-kit/ui/enum-input";
 import Button from "@ui-kit/ui/button";
+import {EDataGroups} from "../../../../../entities/types";
 
 export function UpdateTvShow({ data, ...props }: {
   data: MutableRefObject<TVShowDTO>,

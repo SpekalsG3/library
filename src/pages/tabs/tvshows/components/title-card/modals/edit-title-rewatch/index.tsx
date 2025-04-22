@@ -1,7 +1,6 @@
 import { useRef } from "react";
 
 import styles from './styles.module.css'
-import { EDataGroups } from "@api/types";
 import { IEditTvShowReq } from "@api/tvshows/[id].p";
 import {CachedUseFetch} from "../../../../../../../utils/cached-use-fetch";
 import {TVShowDTO} from "../../../../../../../entities/tv-shows";
@@ -10,6 +9,7 @@ import {EInputType, Input} from "@ui-kit/ui/input";
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import Button from "@ui-kit/ui/button";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
+import {EDataGroups} from "../../../../../../../entities/types";
 
 export function EditTitleRewatch (props: {
   onClose: () => void,

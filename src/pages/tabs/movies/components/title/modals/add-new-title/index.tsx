@@ -3,11 +3,11 @@ import React, { useRef } from "react";
 import styles from './styles.module.css'
 import { MyRequestError, MyRequestMethods, myRequest } from "../../../../../../../utils/request";
 import Button from "@ui-kit/ui/button";
-import { EDataGroups } from "@api/types";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
 import { MovieDTO } from "../../../../../../../entities/movies";
 import { UpdateMovie } from "../../../update-title";
 import {IMoviesCreateDTO} from "@api/movies/index.p";
+import {EDataGroups} from "../../../../../../../entities/types";
 
 export function AddNewMovie(props: {
   onClose: () => void,

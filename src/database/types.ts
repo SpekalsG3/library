@@ -7,8 +7,6 @@ export interface IDBMigration {
 }
 
 export interface IDBAdapter {
-  readonly schema: string;
-
   try_connection(): Promise<void>;
   close(): Promise<void>;
   // TODO: this is used only in migrations because not idea how to generalize them but should

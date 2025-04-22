@@ -1,5 +1,5 @@
 import {MainCommand} from "./commands";
-import {EKnexClients, DBKnex} from "../../postgres";
+import {DBKnex, EKnexClients} from "../../knex";
 
 async function cli() {
   const argv = process.argv;
@@ -21,13 +21,16 @@ async function cli() {
   }
   const name = commandName.join(' ');
 
-  const db = new DBKnex(EKnexClients.Postgres, {
-    user: "postgres",
-    password: "asdf",
-    host: "127.0.0.1",
-    port: 5432,
-    dbName: "media_library",
-  });
+  // const db = new DBKnex(EKnexClients.Postgres, {
+  //   user: "postgres",
+  //   password: "asdf",
+  //   host: "127.0.0.1",
+  //   port: 5432,
+  //   dbName: "media_library",
+  // });
+  const db = new DBKnex(EKnexClients.SQLite3, {
+    filename: "/Users/spekalsg3/home/projects/personal/media_library/sqlite3.db",
+  })
 
   let error: Error | null = null
   try {

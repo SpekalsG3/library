@@ -11,18 +11,13 @@ export default <Migration> {
     const now = new Date().toISOString();
 
     await knex.schema
-      .withSchema(DB.schema)
       .alterTable(MoviesDB.tableName, (table) => {
-        // table.datetime(MoviesDB.fields.updated_at).defaultTo(now).notNullable();
         table.datetime(MoviesDB.fields.updated_at, { useTz: true }).defaultTo(now).notNullable();
         table.datetime(MoviesDB.fields.created_at, { useTz: true }).defaultTo(now).notNullable();
         table.datetime(MoviesDB.fields.updated_at, { useTz: true }).notNullable().alter();
         table.datetime(MoviesDB.fields.created_at, { useTz: true }).notNullable().alter();
       })
-    await knex.schema
-      .withSchema(DB.schema)
       .alterTable(TvShowsDB.tableName, (table) => {
-        // table.datetime(TvShowsDB.fields.updated_at).defaultTo(now).notNullable();
         table.datetime(TvShowsDB.fields.updated_at, { useTz: true }).defaultTo(now).notNullable();
         table.datetime(TvShowsDB.fields.created_at, { useTz: true }).defaultTo(now).notNullable();
         table.datetime(TvShowsDB.fields.updated_at, { useTz: true }).notNullable().alter();
@@ -34,13 +29,10 @@ export default <Migration> {
     const knex = DB.getKnex();
 
     await knex.schema
-      .withSchema(DB.schema)
       .alterTable(MoviesDB.tableName, (table) => {
         table.dropColumn(MoviesDB.fields.updated_at);
         table.dropColumn(MoviesDB.fields.created_at);
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .alterTable(TvShowsDB.tableName, (table) => {
         table.dropColumn(TvShowsDB.fields.updated_at);
         table.dropColumn(TvShowsDB.fields.created_at);

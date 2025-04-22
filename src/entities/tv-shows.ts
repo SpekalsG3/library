@@ -102,10 +102,14 @@ export const TvShowsDB = new DBEntityManager(
     created_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
+      deserializeWith: (s) => new Date(s as string).toISOString(),
+      serializeWith: (s) => s.toISOString(),
     },
     updated_at: {
       dbType: EDBFieldTypes.Date,
       isNullable: false,
+      deserializeWith: (s) => new Date(s as string).toISOString(),
+      serializeWith: (s) => s.toISOString(),
     },
   },
 );

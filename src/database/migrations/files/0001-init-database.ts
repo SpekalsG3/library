@@ -15,21 +15,16 @@ export default <Migration> {
   up: async (DB: IDBAdapter) => {
     const knex = DB.getKnex();
 
-    await knex.schema
-      .withSchema(DB.schema)
+    await knex
+      .schema
       .createTable(CinemaGenresDB.tableName, function (table) {
         table.increments(CinemaGenresDB.fields.id).primary().notNullable();
         table.string(CinemaGenresDB.fields.name).notNullable();
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(CinemaTagsDB.tableName, function (table) {
         table.increments(CinemaTagsDB.fields.id).primary().notNullable();
         table.string(CinemaTagsDB.fields.name).notNullable();
-      });
-
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(MoviesDB.tableName, function (table) {
         table.increments(MoviesDB.fields.id).primary().notNullable();
         table.enum(MoviesDB.fields.status, CMovieGroups).notNullable();
@@ -39,25 +34,17 @@ export default <Migration> {
         table.smallint(MoviesDB.fields.len_min).notNullable();
         table.smallint(MoviesDB.fields.score);
         table.smallint(MoviesDB.fields.rewatched_times);
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(MoviesGenresDB.tableName, function (table) {
         table.increments(MoviesGenresDB.fields.id).primary().notNullable();
         table.integer(MoviesGenresDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
         table.integer(MoviesGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(MoviesTagsDB.tableName, function (table) {
         table.increments(MoviesTagsDB.fields.id).primary().notNullable();
         table.integer(MoviesTagsDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
         table.integer(MoviesTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
-      });
-
-
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(TvShowsDB.tableName, function (table) {
         table.increments(TvShowsDB.fields.id).primary().notNullable();
         table.enum(TvShowsDB.fields.status, CTvShowGroups).notNullable();
@@ -70,16 +57,12 @@ export default <Migration> {
         table.string(TvShowsDB.fields.episodes_count);
         table.smallint(TvShowsDB.fields.last_watched_season);
         table.smallint(TvShowsDB.fields.last_watched_episode);
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(TVShowsGenresDB.tableName, function (table) {
         table.increments(TVShowsGenresDB.fields.id).primary().notNullable();
         table.integer(TVShowsGenresDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
         table.integer(TVShowsGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
-      });
-    await knex.schema
-      .withSchema(DB.schema)
+      })
       .createTable(TVShowsTagsDB.tableName, function (table) {
         table.increments(TVShowsTagsDB.fields.id).primary().notNullable();
         table.integer(TVShowsTagsDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
@@ -90,13 +73,14 @@ export default <Migration> {
   down: async (DB: IDBAdapter) => {
     const knex = DB.getKnex();
 
-    await knex.schema.withSchema(DB.schema).dropTable(MoviesGenresDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(MoviesTagsDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(MoviesDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(TVShowsGenresDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(TVShowsTagsDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(TvShowsDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(CinemaGenresDB.tableName);
-    await knex.schema.withSchema(DB.schema).dropTable(CinemaTagsDB.tableName);
+    await knex.schema
+      .dropTable(MoviesGenresDB.tableName)
+      .dropTable(MoviesTagsDB.tableName)
+      .dropTable(MoviesDB.tableName)
+      .dropTable(TVShowsGenresDB.tableName)
+      .dropTable(TVShowsTagsDB.tableName)
+      .dropTable(TvShowsDB.tableName)
+      .dropTable(CinemaGenresDB.tableName)
+      .dropTable(CinemaTagsDB.tableName)
   }
 }

@@ -1,7 +1,6 @@
 import React, {ReactNode, useRef, useState} from "react";
 
 import styles from "./styles.module.css"
-import { EDataGroups } from "@api/types";
 import { myRequest, MyRequestError, MyRequestMethods } from "../../../../../../../utils/request";
 import Button from "@ui-kit/ui/button";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
@@ -10,6 +9,7 @@ import { KeybindingLayer } from "@ui-kit/ux/layers";
 import { MovieDTO } from "../../../../../../../entities/movies";
 import { UpdateMovie } from "../../../update-title";
 import {IMovieUpdateDTO} from "@api/movies/[id].p";
+import {EDataGroups} from "../../../../../../../entities/types";
 
 export function EditTitle(props: {
   onClose: () => void,

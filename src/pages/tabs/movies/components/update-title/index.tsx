@@ -4,10 +4,10 @@ import styles from './styles.module.css'
 import { EInputType, Input } from "@ui-kit/ui/input";
 import { EnumInput } from "@ui-kit/ui/enum-input";
 import { Select } from "@ui-kit/ui/select";
-import { EDataGroups } from "@api/types";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
 import { ModalElement } from "@ui-kit/ux/layers/element";
 import { MovieDTO } from "../../../../../entities/movies";
+import {EDataGroups} from "../../../../../entities/types";
 
 export function UpdateMovie({ data, ...props }: {
   data: MutableRefObject<MovieDTO>,
