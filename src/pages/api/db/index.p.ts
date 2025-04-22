@@ -2,6 +2,7 @@ import {IDBAdapter} from "@database/types";
 import {Handle, handler} from "../utils/handler";
 import {EKnexClients, IKnexOptions, DBKnex} from "@database/postgres";
 import {runChecks} from "../utils/run-checks";
+import {MigrationsList} from "@database/migrations/files";
 
 export enum ConnectionTypes {
   Postgres = "postgres",
@@ -29,7 +30,7 @@ function validateConnOpts(body: any): ConnectionOptions<ConnectionTypes> {
   }
 
   runChecks([
-    [typeof body === "object", "body should an object"],
+    [typeof body === "object", "body should be an object"],
     [Object.values(ConnectionTypes).includes(body.type), `Invalid 'body.type', should be one of: '${Object.values(ConnectionTypes).join("','")}'`],
     [typeof body.options === "object", "Field 'body.options' should be an object"],
   ]);
@@ -96,44 +97,79 @@ function areSameOpts(lhs: ConnectionOptions<ConnectionTypes>, rhs: ConnectionOpt
   return true;
 }
 
-const post: Handle<string> = async function (req, res) {
+export interface ISaveConnectionMigrationRes {
+  conflictingIndex: null | number,
+  missing: number,
+  extra: number,
+}
+
+export interface ISaveConnectionRes {
+  message: string,
+  migrations: ISaveConnectionMigrationRes,
+}
+
+const post: Handle<ISaveConnectionRes> = async function (req, res) {
   const opts = validateConnOpts(req.body);
 
+  let message!: string;
   if (global.DB) {
     if (areSameOpts(global.DB.opts, opts)) {
-      return res.json({
-        success: true,
-        data: "DB connection is already initialized with same db and user",
-      });
-    }
+      message = "DB connection is already initialized with same db and user";
+    } else {
+      await global.DB.db.close();
+      global.DB = null;
 
-    await global.DB.db.close();
-    global.DB = null;
+      let db!: IDBAdapter;
+      switch (opts.type) {
+        case ConnectionTypes.Postgres: {
+          db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
+          break;
+        }
+        case ConnectionTypes.SQLite3: {
+          db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
+          break;
+        }
+      }
+
+      global.DB = {
+        opts,
+        db,
+      };
+
+      message = "Successfully connected";
+    }
   }
 
-  let db!: IDBAdapter;
-  switch (opts.type) {
-    case ConnectionTypes.Postgres: {
-      db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
-      break;
-    }
-    case ConnectionTypes.SQLite3: {
-      db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
+  const migrationsRes: ISaveConnectionMigrationRes = {
+    conflictingIndex: null,
+    extra: 0,
+    missing: 0,
+  }
+
+  const appliedMigrations = await global.DB!.db.migrationsAll();
+
+  for (let i = 0; i < appliedMigrations.length; i++) {
+    const expectedPublicId = MigrationsList[i].name;
+    const appliedPublicId = appliedMigrations[i].public_id;
+
+    if (expectedPublicId !== appliedPublicId) {
+      migrationsRes.conflictingIndex = i;
       break;
     }
   }
 
-  await db.try_connection();
-
-  global.DB = {
-    opts,
-    db,
-  };
-  console.log('global.DB set', global.DB?.opts);
+  if (MigrationsList.length > appliedMigrations.length) {
+    migrationsRes.missing = MigrationsList.length - appliedMigrations.length;
+  } else {
+    migrationsRes.extra = appliedMigrations.length - MigrationsList.length;
+  }
 
   res.json({
     success: true,
-    data: "Successfully connected",
+    data: {
+      message,
+      migrations: migrationsRes,
+    },
   })
 }
 

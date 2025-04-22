@@ -19,6 +19,7 @@
   - [ ] Migrations
     - [x] With Knex
     - [ ] Generalize without knex
+    - [x] Apply dynamically using api
 - Categories update
   - [ ] UI to create new categories
     - [ ] save user-defined entity schema
@@ -27,6 +28,7 @@
 - Improvements
   - [ ] Search
   - [ ] Existing genres/tags suggesting
+  - [ ] Add extra confirmation when deciding to apply migrations
 - Bugs
   - [x] Movies/TVShows tags/genres array table gets populated with
 duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid

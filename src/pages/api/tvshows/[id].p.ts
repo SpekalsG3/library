@@ -190,16 +190,6 @@ const del: Handle<undefined> = async function (req, res) {
   try {
     const knex = global.DB.db.getKnex();
 
-    const n = await knex
-      .table(TvShowsDB.tableName)
-      .delete()
-      .where({
-        [TvShowsDB.fields.id]: id,
-      });
-    if (n === 0) {
-      throw new Error(`Deleted no record with id "${id}"`);
-    }
-
     await knex
       .table(TVShowsGenresDB.tableName)
       .delete()
@@ -212,6 +202,16 @@ const del: Handle<undefined> = async function (req, res) {
       .where({
         [TVShowsTagsDB.fields.tv_show_id]: id,
       });
+
+    const n = await knex
+      .table(TvShowsDB.tableName)
+      .delete()
+      .where({
+        [TvShowsDB.fields.id]: id,
+      });
+    if (n === 0) {
+      throw new Error(`Deleted no record with id "${id}"`);
+    }
   } catch (e) {
     await global.DB.db.rollback();
     throw e;

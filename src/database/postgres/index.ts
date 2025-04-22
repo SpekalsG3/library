@@ -1,6 +1,7 @@
 import { knex, Knex } from "knex";
 import {IDBAdapter} from "../types";
-import {IMigrationHistory, MigrationHistory, MigrationLock} from "../entities";
+import {MigrationHistoryDB, MigrationHistoryDBEntity} from "../../entities/migration-history";
+import {MigrationLockDB} from "../../entities/migration-lock";
 
 export interface IOptionsPG {
   user: string,
@@ -75,35 +76,36 @@ export class DBKnex<T extends EKnexClients> implements IDBAdapter {
     await this.getKnex()
       .schema
       .withSchema(this.schema)
-      .createTable(MigrationHistory.name, (table) => {
+      .createTable(MigrationHistoryDB.tableName, (table) => {
         table
-          .increments(MigrationHistory.c.id)
+          .increments(MigrationHistoryDB.fields.id)
           .primary()
           .notNullable();
         table
-          .string(MigrationHistory.c.public_id)
+          .string(MigrationHistoryDB.fields.public_id)
           .unique()
           .notNullable();
         table
-          .timestamp(MigrationHistory.c.timestamp, {
+          .timestamp(MigrationHistoryDB.fields.timestamp, {
             useTz: true,
           })
           .notNullable();
       })
-      .createTable(MigrationLock.name, (table) => {
+      .createTable(MigrationLockDB.tableName, (table) => {
         table
-          .boolean(MigrationLock.c.is_locked)
+          .boolean(MigrationLockDB.fields.is_locked)
           .notNullable()
           .unique();
       });
-    return this.getKnex()(MigrationLock.name).insert({
-      [MigrationLock.c.is_locked]: false,
+    return this.getKnex()(MigrationLockDB.tableName).insert({
+      [MigrationLockDB.fields.is_locked]: false,
     })
   }
 
-  public async migrationsAll(): Promise<IMigrationHistory[]> {
+  public async migrationsAll(): Promise<MigrationHistoryDBEntity[]> {
     try {
-      return this.getKnex()(MigrationHistory.name)
+      return await this.getKnex()(MigrationHistoryDB.tableName)
+        .orderBy(MigrationHistoryDB.fields.id, "asc")
     } catch (e) {
       // if (e instanceof TableNotFoundException) {
       //   return []
@@ -114,29 +116,29 @@ export class DBKnex<T extends EKnexClients> implements IDBAdapter {
   }
 
   public async migrationsSetLock(lock: boolean): Promise<boolean> {
-    const res = await this.getKnex()(MigrationLock.name)
+    const res = await this.getKnex()(MigrationLockDB.tableName)
       .update({
-        [MigrationLock.c.is_locked]: lock,
+        [MigrationLockDB.fields.is_locked]: lock,
       })
       .where({
-        [MigrationLock.c.is_locked]: !lock,
+        [MigrationLockDB.fields.is_locked]: !lock,
       });
     return res == 1;
   }
 
   public async migrationsCreate(publicId: string): Promise<void> {
-    return this.getKnex()(MigrationHistory.name)
+    return this.getKnex()(MigrationHistoryDB.tableName)
       .insert({
-        [MigrationHistory.c.public_id]: publicId,
-        [MigrationHistory.c.timestamp]: new Date(),
+        [MigrationHistoryDB.fields.public_id]: publicId,
+        [MigrationHistoryDB.fields.timestamp]: new Date(),
       });
   }
 
   public async migrationsDelete(publicId: string): Promise<number> {
-    return this.getKnex()(MigrationHistory.name)
+    return this.getKnex()(MigrationHistoryDB.tableName)
       .delete()
       .where({
-        [MigrationHistory.c.public_id]: publicId,
+        [MigrationHistoryDB.fields.public_id]: publicId,
       });
   }
 }

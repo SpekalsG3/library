@@ -63,6 +63,7 @@ export function LoadConnection(props: {
             <Input
               title="Username"
               onChange={(v) => connOptsRef.current[connType].user = v}
+              value={connOptsRef.current[connType].user}
               type={EInputType.text}
               className={styles.input}
               tabIndex={1}
@@ -70,6 +71,7 @@ export function LoadConnection(props: {
             <Input
               title="User password"
               onChange={(v) => connOptsRef.current[connType].password = v}
+              value={connOptsRef.current[connType].password}
               type={EInputType.text}
               className={styles.input}
               tabIndex={2}
@@ -77,6 +79,7 @@ export function LoadConnection(props: {
             <Input
               title="Hostname"
               onChange={(v) => connOptsRef.current[connType].host = v}
+              value={connOptsRef.current[connType].host}
               type={EInputType.text}
               className={styles.input}
               tabIndex={3}
@@ -84,6 +87,7 @@ export function LoadConnection(props: {
             <Input
               title="Host port"
               onChange={(v) => connOptsRef.current[connType].port = v}
+              value={connOptsRef.current[connType].port}
               type={EInputType.number}
               className={styles.input}
               tabIndex={4}
@@ -91,6 +95,7 @@ export function LoadConnection(props: {
             <Input
               title="Database name"
               onChange={(v) => connOptsRef.current[connType].dbName = v}
+              value={connOptsRef.current[connType].dbName}
               type={EInputType.text}
               className={styles.input}
               tabIndex={5}

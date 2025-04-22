@@ -2,6 +2,7 @@ export enum EDBFieldTypes {
   String = "String",
   Integer = "Integer",
   Date = "Date",
+  Boolean = "Boolean",
   JSON = "JSON",
 }
 
@@ -9,6 +10,7 @@ type _DBFieldToTs<T extends EDBFieldTypes> = {
   [EDBFieldTypes.String]: string,
   [EDBFieldTypes.Integer]: number,
   [EDBFieldTypes.Date]: Date,
+  [EDBFieldTypes.Boolean]: boolean,
   [EDBFieldTypes.JSON]: any,
 }[T];
 
