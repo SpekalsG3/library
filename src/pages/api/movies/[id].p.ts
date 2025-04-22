@@ -16,9 +16,11 @@ function validateIdParam (param: string | string[] | undefined): number {
   return id
 }
 
-function validatePutBody(body: any): {
+export interface IMovieUpdateDTO {
   item: MovieDTOEditable,
-} {
+}
+
+function validatePutBody(body: any): IMovieUpdateDTO {
   runChecks([
     [body !== null, "body is null"],
     [typeof body.item === "object", "Field `body.item` is required"],
@@ -138,6 +140,7 @@ const put: Handle<undefined> = async function (req, res) {
           await knex.table(arrayTable.tableName)
             .delete()
             .whereIn(
+              // @ts-ignore // in doc, `whereIn` also accepts `(string, any[])`
               arrayTable.fields.id,
               deleteIds,
             );

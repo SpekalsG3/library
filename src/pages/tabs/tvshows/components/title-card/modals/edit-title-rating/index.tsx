@@ -32,7 +32,6 @@ export function EditTitleRating (props: {
                 body: data,
             });
             props.itemData.score = newScore.current;
-            props.itemData.updated_at = Date.now();
             props.cachedData.updateCurrentState((s) => {
                 s[props.itemData.id] = props.itemData;
                 return s;

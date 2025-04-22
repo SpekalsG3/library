@@ -2,7 +2,6 @@ import React, {ReactNode, useRef, useState} from "react";
 
 import styles from "./styles.module.css"
 import { EDataGroups } from "@api/types";
-import { IEditMovieReq } from "@api/movies/[id].p";
 import { myRequest, MyRequestError, MyRequestMethods } from "../../../../../../../utils/request";
 import Button from "@ui-kit/ui/button";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
@@ -10,6 +9,7 @@ import { ModalElement } from "@ui-kit/ux/layers/element";
 import { KeybindingLayer } from "@ui-kit/ux/layers";
 import { MovieDTO } from "../../../../../../../entities/movies";
 import { UpdateMovie } from "../../../update-title";
+import {IMovieUpdateDTO} from "@api/movies/[id].p";
 
 export function EditTitle(props: {
   onClose: () => void,
@@ -20,16 +20,15 @@ export function EditTitle(props: {
   const [confirmationModal, setConfirmationModal] = useState<ReactNode | null>(null);
 
   const editItem = async () => {
-    const body: IEditMovieReq = {
+    const body: IMovieUpdateDTO = {
       item: data.current,
     };
 
     try {
-      await myRequest<IEditMovieReq, any>(`/api/movies/${props.itemData.id}`, {
+      await myRequest<IMovieUpdateDTO, any>(`/api/movies/${props.itemData.id}`, {
         method: MyRequestMethods.PUT,
         body: body,
       });
-      data.current.updated_at = Date.now();
       if (data.current.status === props.cachedData.getCurrentKey()) {
         props.cachedData.updateCurrentState((s) => {
           s[props.itemData.id] = data.current

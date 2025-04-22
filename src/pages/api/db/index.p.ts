@@ -114,11 +114,11 @@ const post: Handle<string> = async function (req, res) {
   let db!: IDBAdapter;
   switch (opts.type) {
     case ConnectionTypes.Postgres: {
-      db = new DBKnex(EKnexClients.Postgres, opts.options);
+      db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
       break;
     }
     case ConnectionTypes.SQLite3: {
-      db = new DBKnex(EKnexClients.SQLite3, opts.options);
+      db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
       break;
     }
   }

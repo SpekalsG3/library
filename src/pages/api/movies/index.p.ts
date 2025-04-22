@@ -130,9 +130,11 @@ export function validateItemData (item: Partial<MovieDTOEditable>): MovieDTOEdit
     }
 }
 
-function validateCreateBody (body: any): {
+export interface IMoviesCreateDTO {
   item: MovieDTOEditable,
-} {
+}
+
+function validateCreateBody (body: any): IMoviesCreateDTO {
   runChecks([
     [body !== null, "body is null"],
     [typeof body.item === "object", "Field `body.item` is required"],

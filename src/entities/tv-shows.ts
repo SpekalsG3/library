@@ -18,7 +18,7 @@ export const TvShowDbManager = new DBEntityManager(
     last_watched_episode: "last_watched_episode",
     created_at: "created_at",
     updated_at: "updated_at",
-  },
+  } as const,
   {
     id: {
       dbType: EDBFieldTypes.Integer,
@@ -48,21 +48,21 @@ export const TvShowDbManager = new DBEntityManager(
       isNullable: true,
     },
     score: {
-      dbType: EDBFieldTypes.String,
+      dbType: EDBFieldTypes.JSON,
       isNullable: true,
-      deserializeWith: (score) => fromSeasonList(score),
+      deserializeWith: (score) => fromSeasonList(score as string),
       serializeWith: (score) => toSeasonList(score as any),
     },
     rewatched_times: {
-      dbType: EDBFieldTypes.String,
+      dbType: EDBFieldTypes.JSON,
       isNullable: true,
-      deserializeWith: (score) => fromSeasonList(score),
+      deserializeWith: (score) => fromSeasonList(score as string),
       serializeWith: (score) => toSeasonList(score as any),
     },
     episodes_count: {
-      dbType: EDBFieldTypes.String,
+      dbType: EDBFieldTypes.JSON,
       isNullable: false,
-      deserializeWith: (s) => s.split(',').map((el: string) => Number(el)),
+      deserializeWith: (s) => (s as string).split(',').map((el: string) => Number(el)),
       serializeWith: (s) => (s as number[]).join(','),
     },
     avg_ep_len_min: {

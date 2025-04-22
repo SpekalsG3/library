@@ -1,15 +1,15 @@
-import {escapeSqlString, unescapeSqlString} from "../utils/database/escapes";
-
 export enum EDBFieldTypes {
-  String = 'String',
-  Integer = 'Integer',
-  Date = 'Date',
+  String = "String",
+  Integer = "Integer",
+  Date = "Date",
+  JSON = "JSON",
 }
 
 type _DBFieldToTs<T extends EDBFieldTypes> = {
   [EDBFieldTypes.String]: string,
   [EDBFieldTypes.Integer]: number,
   [EDBFieldTypes.Date]: Date,
+  [EDBFieldTypes.JSON]: any,
 }[T];
 
 type DBFieldToTs<
@@ -25,19 +25,17 @@ type DBFieldToTs<
       ? SerdeValue | null
       : SerdeValue;
 
-export interface IDBField<T extends EDBFieldTypes> {
-  dbType: T,
+export interface IDBField<T> {
+  dbType: EDBFieldTypes,
   isNullable: boolean,
   isPrimaryKey?: true,
   variants?: string[],
-  deserializeWith?: (value: unknown) => _DBFieldToTs<T>,
-  serializeWith?: (value: _DBFieldToTs<T>) => unknown,
+  deserializeWith?: (value: unknown) => T,
+  serializeWith?: (value: T) => unknown,
 }
 
 type TDBEntity<Fields extends Record<string, string>> = {
-  [F in Fields[keyof Fields]]: IDBField<EDBFieldTypes.String>
-    | IDBField<EDBFieldTypes.Integer>
-    | IDBField<EDBFieldTypes.Date>
+  [F in Fields[keyof Fields]]: IDBField<any>
 }
 
 type DBToTs<Fs extends Record<string, string>, T extends TDBEntity<Fs>> = {
@@ -92,29 +90,6 @@ export class DBEntityManager<
 
       let value = object[fieldName] ?? null;
 
-      if (value !== null) {
-        switch (this.entity[fieldName].dbType) {
-          case EDBFieldTypes.String: {
-            value = unescapeSqlString(value as string)
-            break;
-          }
-          case EDBFieldTypes.Integer: {
-            // value = value
-            break;
-          }
-          case EDBFieldTypes.Date: {
-            value = new Date(value);
-            break;
-          }
-        }
-
-        const f = this.entity[fieldName].deserializeWith;
-        if (f) {
-          // @ts-ignore
-          value = f(value);
-        }
-      }
-
       res[fieldName] = value;
     }
 
@@ -141,7 +116,7 @@ export class DBEntityManager<
       }
 
       if (!isNull) {
-        const f = this.entity[fieldName].serializeWith;
+        const f = this.entity[fieldName].serializeWith as any;
         if (f) {
           value = f(value);
         }

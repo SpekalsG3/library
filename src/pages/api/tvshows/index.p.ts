@@ -11,7 +11,7 @@ import { TVShowsGenresDBManager } from "../../../entities/tv-shows-genres-array"
 import { TVShowsTagsDBManager } from "../../../entities/tv-shows-tags-array";
 
 export function fromSeasonList(
-  s: string
+  s: string,
 ): { [season: number]: number | undefined } {
     // @ts-ignore // broken interface of .reduce
     return s

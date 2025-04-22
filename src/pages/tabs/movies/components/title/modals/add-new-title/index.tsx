@@ -6,8 +6,8 @@ import Button from "@ui-kit/ui/button";
 import { EDataGroups } from "@api/types";
 import { CachedUseFetch } from "../../../../../../../utils/cached-use-fetch";
 import { MovieDTO } from "../../../../../../../entities/movies";
-import {ICreateMovieItemReq} from "@api/movies/index.p";
 import { UpdateMovie } from "../../../update-title";
+import {IMoviesCreateDTO} from "@api/movies/index.p";
 
 export function AddNewMovie(props: {
   onClose: () => void,
@@ -18,18 +18,16 @@ export function AddNewMovie(props: {
   } as Partial<MovieDTO> as MovieDTO);
 
   const saveNewItem = async () => {
-    const body: ICreateMovieItemReq = {
+    const body: IMoviesCreateDTO = {
       item: data.current,
     };
 
     try {
-      const res = await myRequest<ICreateMovieItemReq, number>(`/api/movies`, {
+      const res = await myRequest<IMoviesCreateDTO, number>(`/api/movies`, {
         method: MyRequestMethods.POST,
         body: body,
       });
       data.current.id = res.body.data;
-      data.current.created_at = Date.now();
-      data.current.updated_at = Date.now();
       props.cachedData.updateCurrentState((s) => {
         s[data.current.id] = data.current;
         return s;
