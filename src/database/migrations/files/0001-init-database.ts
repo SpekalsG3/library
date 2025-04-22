@@ -44,15 +44,15 @@ export default <Migration> {
       .withSchema(DB.schema)
       .createTable(MoviesGenresDB.tableName, function (table) {
         table.increments(MoviesGenresDB.fields.id).primary().notNullable();
-        table.foreign(MoviesGenresDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
-        table.foreign(MoviesGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
+        table.integer(MoviesGenresDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
+        table.integer(MoviesGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
       });
     await knex.schema
       .withSchema(DB.schema)
       .createTable(MoviesTagsDB.tableName, function (table) {
         table.increments(MoviesTagsDB.fields.id).primary().notNullable();
-        table.foreign(MoviesTagsDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
-        table.foreign(MoviesTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
+        table.integer(MoviesTagsDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
+        table.integer(MoviesTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
       });
 
 
@@ -75,15 +75,15 @@ export default <Migration> {
       .withSchema(DB.schema)
       .createTable(TVShowsGenresDB.tableName, function (table) {
         table.increments(TVShowsGenresDB.fields.id).primary().notNullable();
-        table.foreign(TVShowsGenresDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
-        table.foreign(TVShowsGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
+        table.integer(TVShowsGenresDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
+        table.integer(TVShowsGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
       });
     await knex.schema
       .withSchema(DB.schema)
       .createTable(TVShowsTagsDB.tableName, function (table) {
         table.increments(TVShowsTagsDB.fields.id).primary().notNullable();
-        table.foreign(TVShowsTagsDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
-        table.foreign(TVShowsTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
+        table.integer(TVShowsTagsDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
+        table.integer(TVShowsTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
       });
   },
 
