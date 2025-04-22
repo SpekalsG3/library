@@ -4,11 +4,47 @@ This is a tool for personal use. Meaning, if you want a feature implemented or a
 wasn't addressed before, see [Contribution](#contribution). I won't be addressing anything
 that is out of my personal scope.
 
-# Stateless
+## Stateless
 
 Meaning this application itself only uses localStorage to persist data between tabs
 and otherwise does not store anything. All data is stored in database you provide.
 And database can be managed solely through api requests.
+
+# Running
+
+## Prod
+
+```bash
+npm run build
+npm run start
+```
+
+The rest is in UI.
+
+## Dev
+
+```bash
+npm run dev
+```
+
+For CLI setup `CLI_DB_OPTIONS` in `.env` (see [.env.example](./.env.example)). Then run:
+```bash
+npm run migration:init
+```
+
+And after you can run any one of these (self-descriptive):
+```bash
+npm run migration:run
+npm run migration:rollback -- --count 1
+npm run migration:rollback -- --all
+```
+
+You can also spin up local postgres db with:
+```bash
+docker-compose up -d
+```
+
+For SQLite, db at provided path is not required to exist.
 
 # 10 rating scale, no decimals
 

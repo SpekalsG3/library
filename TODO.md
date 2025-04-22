@@ -30,6 +30,8 @@
   - [ ] Search
   - [ ] Existing genres/tags suggesting
   - [ ] Add extra confirmation when deciding to apply migrations
+  - [ ] Add button to forget saved db connection
 - Bugs
   - [x] Movies/TVShows tags/genres array table gets populated with
-duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid
+  duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid
+  - [ ] With sqlite(?) tabs on one panel don't load content properly
