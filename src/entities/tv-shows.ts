@@ -2,7 +2,7 @@ import { DBEntityManager, EDBFieldTypes } from "./interface";
 import { EDataGroups } from "@api/types";
 import {CTvShowGroups, fromSeasonList, toSeasonList} from "@api/tvshows/index.p";
 
-export const TvShowDbManager = new DBEntityManager(
+export const TvShowsDB = new DBEntityManager(
   "tv_shows",
   {
     id: "id",
@@ -92,7 +92,7 @@ export const TvShowDbManager = new DBEntityManager(
   },
 );
 
-export type TVShowDb = ReturnType<typeof TvShowDbManager['getEntity']>;
+export type TVShowDb = ReturnType<typeof TvShowsDB['getEntity']>;
 export type TVShowDTO = TVShowDb & {
   tags: string[],
   genres: string[],

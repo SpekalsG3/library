@@ -57,12 +57,13 @@ const put: Handle<undefined> = async function (req, res) {
       }))
       .where({
         [MoviesDB.fields.id]: movieId,
-      })
+      });
     if (n === 0) {
       throw new Error(`Updated no record with id "${movieId}"`);
     }
 
     const updateArray = async (
+      entityId: number,
       request: string[],
       sourceManager: DBEntityManager<{ id: string, name: string }, any, { id: number, name: string }>,
       arrayTable: DBEntityManager<{ id: string }, any, { id: number }>,
@@ -71,7 +72,6 @@ const put: Handle<undefined> = async function (req, res) {
     ) => {
       const knex = global.DB!.db.getKnex();
       if (request.length > 0) {
-
         const listRaw = await knex
           .table(sourceManager.tableName)
           .select<[{
@@ -84,17 +84,17 @@ const put: Handle<undefined> = async function (req, res) {
           return acc;
         }, {});
 
-        const moviesArrayRaw = await knex
+        const arrayRaw = await knex
           .table(arrayTable.tableName)
           .select<[{
             id: number,
             arrayId: number,
           }]>(`${sourceManager.fields.id} as id`, `${arraySourceIdName} as arrayId`)
           .where({
-            [arraySourceIdName]: movieId,
+            [arraySourceIdName]: entityId,
           });
 
-        const movieArrayById = moviesArrayRaw.reduce<{ [id: number]: number | undefined }>((acc, el) => {
+        const arrayById = arrayRaw.reduce<{ [id: number]: number | undefined }>((acc, el) => {
           acc[el.arrayId] = el.id;
           return acc;
         }, {});
@@ -105,6 +105,7 @@ const put: Handle<undefined> = async function (req, res) {
           let listId = listByName[listName];
 
           if (listId === undefined) {
+            // if source element does not exist at all, create and create link
             const [e] = await knex
               .table(sourceManager.tableName)
               .insert({
@@ -116,12 +117,9 @@ const put: Handle<undefined> = async function (req, res) {
             listId = e.id;
             listByName[listName] = listId;
             arrayInserts.push(listId);
-          } else {
-            if (movieArrayById[listId]) {
-              delete movieArrayById[listId];
-            } else {
-              arrayInserts.push(listId);
-            }
+          } else if (!arrayById[listId]) {
+            // if source element exists and there's no link, create link
+            arrayInserts.push(listId);
           }
         }
 
@@ -130,12 +128,12 @@ const put: Handle<undefined> = async function (req, res) {
             .insert(
               arrayInserts.map((listId) => ({
                 [arrayIdMapName]: listId,
-                [arraySourceIdName]: movieId,
+                [arraySourceIdName]: entityId,
               })),
             );
         }
 
-        const deleteIds = Object.values(movieArrayById);
+        const deleteIds = Object.values(arrayById);
         if (deleteIds.length > 0) {
           await knex.table(arrayTable.tableName)
             .delete()
@@ -149,11 +147,13 @@ const put: Handle<undefined> = async function (req, res) {
         await knex.table(arrayTable.tableName)
           .delete()
           .where({
-            [arraySourceIdName]: movieId,
+            [arraySourceIdName]: entityId,
           });
       }
     }
+
     await updateArray(
+      movieId,
       dtoGenres,
       CinemaGenresDB,
       MoviesGenresDB,
@@ -161,6 +161,7 @@ const put: Handle<undefined> = async function (req, res) {
       MoviesGenresDB.fields.movie_id,
     );
     await updateArray(
+      movieId,
       dtoTags,
       CinemaTagsDB,
       MoviesTagsDB,
@@ -184,7 +185,6 @@ const del: Handle<undefined> = async function (req, res) {
   }
 
   const id = validateIdParam(req.query.id);
-
 
   await global.DB.db.begin();
   try {

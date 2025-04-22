@@ -1,12 +1,12 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
 
-export const TVShowsTagsDBManager = new DBEntityManager(
+export const TVShowsTagsDB = new DBEntityManager(
   "tv_shows_tags_array",
   {
     id: "id",
     tv_show_id: "tv_show_id",
     tag_id: "tag_id",
-  },
+  } as const,
   {
     id: {
       dbType: EDBFieldTypes.Integer,

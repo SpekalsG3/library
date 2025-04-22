@@ -171,8 +171,8 @@ const post: Handle<number> = async function (req, res) {
         created_at: now,
         updated_at: now,
       }))
-      .returning(`${MoviesDB.fields.id} as id`);
-    movieId = result[MoviesDB.fields.id];
+      .returning<[{ id: number }]>(`${MoviesDB.fields.id} as id`);
+    movieId = result.id;
 
     const updateArray = async <T extends Record<string, number>>(
       request: string[],

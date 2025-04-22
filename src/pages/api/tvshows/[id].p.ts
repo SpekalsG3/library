@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { IRequestResponseSuccess } from "../types";
-import { handler } from "../utils/handler";
+import {Handle, handler} from "../utils/handler";
 import { runChecks } from "../utils/run-checks";
 import { validateEditItemData } from "./index.p";
-import { TvShowDbManager, TVShowDTOEditable } from "../../../entities/tv-shows";
+import { TvShowsDB, TVShowDTOEditable } from "../../../entities/tv-shows";
 import { DBEntityManager } from "../../../entities/interface";
 import { CinemaGenresDB } from "../../../entities/cinema-genres";
 import { CinemaTagsDB } from "../../../entities/cinema-tags";
+import {TVShowsGenresDB} from "../../../entities/tv-shows-genres-array";
+import {TVShowsTagsDB} from "../../../entities/tv-shows-tags-array";
 
 export interface IEditTvShowReq {
   item: TVShowDTOEditable,
@@ -26,52 +26,70 @@ function validateIdParam (param: string | string[] | undefined): number {
   return id
 }
 
-async function put (
-  req: NextApiRequest,
-  res: NextApiResponse<IRequestResponseSuccess<any>>,
-) {
-  const id = validateIdParam(req.query.id);
+const put: Handle<undefined> = async function (req, res) {
+  if (!global.DB) {
+    throw new Error("DB is not initialized");
+  }
+
+  const tvShowId = validateIdParam(req.query.id);
   const body = validateEditBody(req.body);
 
-  const db = await getDB();
-
-  await db.exec("BEGIN TRANSACTION");
+  await global.DB.db.begin();
 
   try {
-    const n = await TvShowDbManager.update({
-      data: {
-        ...body.item,
-        updated_at: Date.now(),
-      },
-      where: {
-        id: id,
-      }
-    });
+    const {
+      genres: dtoGenres,
+      tags: dtoTags,
+      ...dto
+    } = body.item;
+
+    const n = await global.DB.db.getKnex()
+      .table(TvShowsDB.tableName)
+      .update(TvShowsDB.toDb({
+        ...dto,
+        updated_at: new Date(),
+      }))
+      .where({
+        [TvShowsDB.fields.id]: tvShowId,
+      });
     if (n === 0) {
-      throw new Error(`Updated no record with id "${id}"`);
+      throw new Error(`Updated no record with id "${tvShowId}"`);
     }
 
     const updateArray = async (
+      entityId: number,
       request: string[],
-      sourceManager: DBEntityManager<any, { id: number, name: string }>,
-      arrayTable: string,
-      arrayTableKey: string,
+      sourceManager: DBEntityManager<{ id: string, name: string }, any, { id: number, name: string }>,
+      arrayTable: DBEntityManager<{ id: string }, any, { id: number }>,
+      arrayIdMapName: string,
+      arraySourceIdName: string,
     ) => {
+      const knex = global.DB!.db.getKnex();
       if (request.length > 0) {
-        const listRaw = await sourceManager.getAll({});
+        const listRaw = await knex
+          .table(sourceManager.tableName)
+          .select<[{
+            id: number,
+            name: number,
+          }]>(`${sourceManager.fields.id} as id`, `${sourceManager.fields.name} as name`);
+
         const listByName = listRaw.reduce<{ [name: string]: number | undefined }>((acc, el) => {
-          acc[el.current.name] = el.current.id;
+          acc[el.name] = el.id;
           return acc;
         }, {});
 
-        const tvshowsArrayRaw = await db.all<{
-          id: number,
-          array_id: number,
-        }[]>(
-          `SELECT id, ${arrayTableKey} as array_id FROM ${arrayTable} WHERE tv_show_id = ${id}`
-        );
-        const tvshowsArrayById = tvshowsArrayRaw.reduce<{ [id: number]: number | undefined }>((acc, el) => {
-          acc[el.array_id] = el.id;
+        const arrayRaw = await knex
+          .table(arrayTable.tableName)
+          .select<[{
+            id: number,
+            arrayId: number,
+          }]>(`${sourceManager.fields.id} as id`, `${arraySourceIdName} as arrayId`)
+          .where({
+            [arraySourceIdName]: entityId,
+          });
+
+        const arrayById = arrayRaw.reduce<{ [id: number]: number | undefined }>((acc, el) => {
+          acc[el.arrayId] = el.id;
           return acc;
         }, {});
 
@@ -81,84 +99,118 @@ async function put (
           let listId = listByName[listName];
 
           if (listId === undefined) {
-            const e = await sourceManager.insert({
-              name: listName,
-            });
-            listId = e.current.id;
+            // if source element does not exist at all, create and create link
+            const [e] = await knex
+              .table(sourceManager.tableName)
+              .insert({
+                [sourceManager.fields.name]: listName,
+              })
+              .returning<[{
+                id: number,
+              }]>(`${sourceManager.fields.id} as id`);
+            listId = e.id;
             listByName[listName] = listId;
             arrayInserts.push(listId);
-          } else {
-            if (tvshowsArrayById[listId]) {
-              delete tvshowsArrayById[listId];
-            } else {
-              arrayInserts.push(listId);
-            }
+          } else if (!arrayById[listId]) {
+            // if source element exists and there's no link, create link
+            arrayInserts.push(listId);
           }
         }
 
         if (arrayInserts.length > 0) {
-          await db.exec(
-            `INSERT INTO ${arrayTable} (tv_show_id, ${arrayTableKey}) VALUES ` +
-            arrayInserts.map((listId) => `(${id}, ${listId})`).join(',')
-          );
+          await knex.table(arrayTable.tableName)
+            .insert(
+              arrayInserts.map((listId) => ({
+                [arrayIdMapName]: listId,
+                [arraySourceIdName]: entityId,
+              })),
+            );
         }
 
-        const deleteIds = Object.values(tvshowsArrayById);
+        const deleteIds = Object.values(arrayById);
         if (deleteIds.length > 0) {
-          await db.exec(
-            `DELETE FROM ${arrayTable} WHERE id IN (${deleteIds.join(',')})`
-          )
+          await knex.table(arrayTable.tableName)
+            .delete()
+            .whereIn(
+              // @ts-ignore // in doc, `whereIn` also accepts `(string, any[])`
+              arrayTable.fields.id,
+              deleteIds,
+            );
         }
       } else {
-        await db.exec(
-          `DELETE FROM ${arrayTable} WHERE tv_show_id = ${id}`
-        )
+        await knex.table(arrayTable.tableName)
+          .delete()
+          .where({
+            [arraySourceIdName]: entityId,
+          });
       }
     }
-    await updateArray(body.item.genres, CinemaGenresDB, "tv_shows_genres_array", "genre_id");
-    await updateArray(body.item.tags, CinemaTagsDB, "tv_shows_tags_array", "tag_id");
+
+    await updateArray(
+      tvShowId,
+      dtoGenres,
+      CinemaGenresDB,
+      TVShowsGenresDB,
+      TVShowsGenresDB.fields.genre_id,
+      TVShowsGenresDB.fields.tv_show_id,
+    );
+    await updateArray(
+      tvShowId,
+      dtoTags,
+      CinemaTagsDB,
+      TVShowsTagsDB,
+      TVShowsTagsDB.fields.tag_id,
+      TVShowsTagsDB.fields.tv_show_id,
+    );
   } catch (e) {
-    await db.exec("ROLLBACK");
+    await global.DB.db.rollback();
     throw e;
   }
-  await db.exec("COMMIT");
+  await global.DB.db.commit();
 
   res.status(200).send({
     success: true,
-    data: undefined,
   });
 }
 
-async function del (
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+const del: Handle<undefined> = async function (req, res) {
+  if (!global.DB) {
+    throw new Error("DB is not initialized");
+  }
+
   const id = validateIdParam(req.query.id);
 
-  const db = await getDB();
-  await db.exec("BEGIN TRANSACTION");
+  await global.DB.db.begin();
   try {
-    const n = await TvShowDbManager.delete({
-      where: {
-        id: id,
-      },
-    })
+    const knex = global.DB.db.getKnex();
+
+    const n = await knex
+      .table(TvShowsDB.tableName)
+      .delete()
+      .where({
+        [TvShowsDB.fields.id]: id,
+      });
     if (n === 0) {
       throw new Error(`Deleted no record with id "${id}"`);
     }
-    await db.exec(
-      "DELETE FROM tv_shows_genres_array WHERE " +
-      `tv_show_id = ${id}`
-    );
-    await db.exec(
-      "DELETE FROM tv_shows_tags_array WHERE " +
-      `tv_show_id = ${id}`
-    );
+
+    await knex
+      .table(TVShowsGenresDB.tableName)
+      .delete()
+      .where({
+        [TVShowsGenresDB.fields.tv_show_id]: id,
+      });
+    await knex
+      .table(TVShowsTagsDB.tableName)
+      .delete()
+      .where({
+        [TVShowsTagsDB.fields.tv_show_id]: id,
+      });
   } catch (e) {
-    await db.exec("ROLLBACK");
+    await global.DB.db.rollback();
     throw e;
   }
-  await db.exec("COMMIT");
+  await global.DB.db.commit();
 
   res.status(200).send({
     success: true,

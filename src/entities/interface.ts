@@ -90,6 +90,13 @@ export class DBEntityManager<
 
       let value = object[fieldName] ?? null;
 
+      if (value !== null) {
+        const f = this.entity[fieldName].deserializeWith as any;
+        if (f) {
+          value = f(value);
+        }
+      }
+
       res[fieldName] = value;
     }
 
