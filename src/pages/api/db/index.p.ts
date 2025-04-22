@@ -111,33 +111,38 @@ export interface ISaveConnectionRes {
 const post: Handle<ISaveConnectionRes> = async function (req, res) {
   const opts = validateConnOpts(req.body);
 
+  let toReconnect = true;
   let message!: string;
+
   if (global.DB) {
     if (areSameOpts(global.DB.opts, opts)) {
+      toReconnect = false;
       message = "DB connection is already initialized with same db and user";
     } else {
       await global.DB.db.close();
       global.DB = null;
-
-      let db!: IDBAdapter;
-      switch (opts.type) {
-        case ConnectionTypes.Postgres: {
-          db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
-          break;
-        }
-        case ConnectionTypes.SQLite3: {
-          db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
-          break;
-        }
-      }
-
-      global.DB = {
-        opts,
-        db,
-      };
-
-      message = "Successfully connected";
     }
+  }
+
+  if (toReconnect) {
+    let db!: IDBAdapter;
+    switch (opts.type) {
+      case ConnectionTypes.Postgres: {
+        db = new DBKnex(EKnexClients.Postgres, (opts as ConnectionOptions<ConnectionTypes.Postgres>).options);
+        break;
+      }
+      case ConnectionTypes.SQLite3: {
+        db = new DBKnex(EKnexClients.SQLite3, (opts as ConnectionOptions<ConnectionTypes.SQLite3>).options);
+        break;
+      }
+    }
+
+    global.DB = {
+      opts,
+      db,
+    };
+
+    message = "Successfully connected";
   }
 
   const migrationsRes: ISaveConnectionMigrationRes = {

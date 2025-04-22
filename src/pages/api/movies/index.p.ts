@@ -8,6 +8,7 @@ import {DBEntityManager} from "../../../entities/interface";
 import {MoviesGenresDB} from "../../../entities/movies-genres-array";
 import {MoviesTagsDB} from "../../../entities/movies-tags-array";
 import {CMovieGroups, EDataGroups} from "../../../entities/types";
+import {instanceOf} from "prop-types";
 
 const get: Handle<{
   [id: string]: MovieDTO,
@@ -102,30 +103,30 @@ const get: Handle<{
 }
 
 export function validateItemData (item: Partial<MovieDTOEditable>): MovieDTOEditable {
-    runChecks([
-        [item !== undefined, `'body.item_data' has to be json`],
-    ]);
+  runChecks([
+    [item !== undefined, `'body.item_data' has to be json`],
+  ]);
 
-    runChecks([
-        [item.status !== undefined && CMovieGroups.includes(item.status), `'item.status' has to be one of '${CMovieGroups.join("','")}'`],
-        [typeof item.title === 'string' && item.title.length > 0, `'item.title' has to be non zero length`],
-        [typeof item.cover_url === 'string' && isValidUrl(item.cover_url), `'item.cover_url' has to be a valid URL`],
-        [!(item.genres as unknown[])?.find((el) => !(typeof el === "string" && el.length > 0)), `'item.genres' has to be either undefined or an array of strings`],
-        [!(item.tags as unknown[])?.find((el) => !(typeof el === "string" && el.length > 0)), `'item.genres' has to be either undefined or an array of strings`],
-        [typeof item.len_min === 'number' && !isNaN(item.len_min), `'item.len_min' has to be a valid number`],
-    ]);
+  runChecks([
+    [item.status !== undefined && CMovieGroups.includes(item.status), `'item.status' has to be one of '${CMovieGroups.join("','")}'`],
+    [typeof item.title === 'string' && item.title.length > 0, `'item.title' has to be non zero length`],
+    [typeof item.cover_url === 'string' && isValidUrl(item.cover_url), `'item.cover_url' has to be a valid URL`],
+    [!(item.genres as unknown[])?.find((el) => !(typeof el === "string" && el.length > 0)), `'item.genres' has to be either undefined or an array of strings`],
+    [!(item.tags as unknown[])?.find((el) => !(typeof el === "string" && el.length > 0)), `'item.genres' has to be either undefined or an array of strings`],
+    [typeof item.len_min === 'number' && !isNaN(item.len_min), `'item.len_min' has to be a valid number`],
+  ]);
 
-    return {
-        status: item.status!,
-        title: item.title!,
-        cover_url: item.cover_url!,
-        genres: item.genres ?? [],
-        tags: item.tags ?? [],
-        notes: item.notes ?? null,
-        score: item.score ?? null,
-        rewatched_times: item.rewatched_times ?? null,
-        len_min: item.len_min!,
-    }
+  return {
+    status: item.status!,
+    title: item.title!,
+    cover_url: item.cover_url!,
+    genres: item.genres ?? [],
+    tags: item.tags ?? [],
+    notes: item.notes ?? null,
+    score: item.score ?? null,
+    rewatched_times: item.rewatched_times ?? null,
+    len_min: item.len_min!,
+  }
 }
 
 export interface IMoviesCreateDTO {

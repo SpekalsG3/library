@@ -1,9 +1,9 @@
 import { Title } from './components/title'
 import React from "react";
 import {MovieDTO} from "../../../entities/movies";
-import {EDataGroups} from "@api/types";
 import { CardsPanel } from '@ui-kit/panels/cards';
 import { AddNewMovie } from './components/title/modals/add-new-title';
+import {EDataGroups} from "../../../entities/types";
 
 export default function MoviesPage() {
   return <CardsPanel<MovieDTO, EDataGroups>

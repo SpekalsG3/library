@@ -1,9 +1,9 @@
 import React from "react";
 import {TVShowDTO} from "../../../entities/tv-shows";
-import {EDataGroups} from "@api/types";
 import { CardsPanel } from "@ui-kit/panels/cards";
 import { Title } from "./components/title-card";
 import { AddNewTvShowModal } from "./components/title-card/modals/add-new-title";
+import {EDataGroups} from "../../../entities/types";
 
 export default function TvShowsPage () {
   return <CardsPanel<TVShowDTO, EDataGroups>
@@ -17,7 +17,7 @@ export default function TvShowsPage () {
     ]}
     renderElements={(cachedData, className) => {
       return Object.values(cachedData.getState()?.current ?? {})
-        .sort((a, b) => b.updated_at - a.updated_at)
+        .sort((a, b) => b.updated_at.getTime() - a.updated_at.getTime())
         .map((item) => {
           return (
             <Title
