@@ -32,6 +32,8 @@ Final score is calculated as an average of rating per season.
 Just submit your PR :)
 
 Only these criterias have to be met:
+- Database migrations should only affect the schema. It's okay to update field values
+when these fields are added in that migration but never otherwise.
 - Don't recreate components. If existing button is not generic enough - fix it and reuse it.
 - Don't install trillion of packages for mundane tasks, no `isNumber` shit. It's easy to write it yourself.
 If there are unexpected values - it's your fault, fix the source of invalid sources.
