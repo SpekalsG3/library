@@ -10,16 +10,17 @@
   - [x] Separate Movies and Tv Shows
 - Database update
   - [x] UI to connect to db
-  - [ ] Storage adapters
+  - [ ] Database adapters
     - [ ] Sqlite
     - [x] Postgres
+    - [ ] re-define CRUD interface to hide knex under the hood
   - [x] Entities to do CRUD using adapters
   - [ ] Import/export of db
   - [ ] Convert from one storage to another
   - [ ] Migrations
-    - [x] With Knex
-    - [ ] Generalize without knex
+    - [x] With new adapters
     - [x] Apply dynamically using api
+    - [x] rewrite raw queries to knex
 - Categories update
   - [ ] UI to create new categories
     - [ ] save user-defined entity schema

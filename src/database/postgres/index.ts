@@ -28,7 +28,7 @@ export interface IKnexOptions {
 }
 
 export class DBKnex<T extends EKnexClients> implements IDBAdapter {
-  private readonly schema = "public";
+  public readonly schema = "public";
   private readonly knex: Knex
   private tx: Knex.Transaction | null
 

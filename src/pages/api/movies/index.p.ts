@@ -1,5 +1,4 @@
 import {Handle, handler} from '../utils/handler'
-import { EDataGroups } from '../types';
 import { runChecks } from '../utils/run-checks';
 import { isValidUrl } from "../utils/is-valid-url";
 import { MovieDTO, MovieDTOEditable, MoviesDB } from "../../../entities/movies";
@@ -8,8 +7,7 @@ import {CinemaTagsDB} from "../../../entities/cinema-tags";
 import {DBEntityManager} from "../../../entities/interface";
 import {MoviesGenresDB} from "../../../entities/movies-genres-array";
 import {MoviesTagsDB} from "../../../entities/movies-tags-array";
-
-export const CMovieGroups = [EDataGroups.planned, EDataGroups.completed];
+import {CMovieGroups, EDataGroups} from "../../../entities/types";
 
 const get: Handle<{
   [id: string]: MovieDTO,

@@ -1,6 +1,5 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
-import { EDataGroups } from "@api/types";
-import {CTvShowGroups} from "@api/tvshows/index.p";
+import {CTvShowGroups, EDataGroups} from "./types";
 
 export const MoviesDB = new DBEntityManager(
   "movies",
@@ -30,7 +29,7 @@ export const MoviesDB = new DBEntityManager(
           throw new Error('Unknown status');
         }
         return s as EDataGroups;
-      }
+      },
     },
     title: {
       dbType: EDBFieldTypes.String,

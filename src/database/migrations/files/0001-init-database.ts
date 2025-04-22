@@ -1,84 +1,102 @@
 import { Migration } from "../cli/types";
 import {IDBAdapter} from "../../types";
+import {CinemaGenresDB} from "../../../entities/cinema-genres";
+import {CinemaTagsDB} from "../../../entities/cinema-tags";
+import {MoviesDB} from "../../../entities/movies";
+import {MoviesTagsDB} from "../../../entities/movies-tags-array";
+import {MoviesGenresDB} from "../../../entities/movies-genres-array";
+import {TvShowsDB} from "../../../entities/tv-shows";
+import {TVShowsGenresDB} from "../../../entities/tv-shows-genres-array";
+import {TVShowsTagsDB} from "../../../entities/tv-shows-tags-array";
+import {CMovieGroups, CTvShowGroups} from "../../../entities/types";
 
 export default <Migration> {
   name: "init-database",
   up: async (DB: IDBAdapter) => {
     const knex = DB.getKnex();
 
-    await knex.raw("CREATE TABLE cinema_genres (" +
-      "id serial PRIMARY KEY NOT NULL" +
-      ",name TEXT NOT NULL" +
-      ")");
-    await knex.raw("CREATE TABLE cinema_tags (" +
-      "id serial PRIMARY KEY NOT NULL" +
-      ",name TEXT NOT NULL" +
-      ")");
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(CinemaGenresDB.tableName, function (table) {
+        table.increments(CinemaGenresDB.fields.id).primary().notNullable();
+        table.string(CinemaGenresDB.fields.name).notNullable();
+      });
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(CinemaTagsDB.tableName, function (table) {
+        table.increments(CinemaTagsDB.fields.id).primary().notNullable();
+        table.string(CinemaTagsDB.fields.name).notNullable();
+      });
 
-    await knex.raw("CREATE TABLE movies (" +
-      "id serial PRIMARY KEY NOT NULL" +
-      ",status TEXT NOT NULL" +
-      ",title TEXT NOT NULL" +
-      ",cover_url TEXT NOT NULL" +
-      ",notes TEXT" +
-      ",score INTEGER" +
-      ",rewatched_times INTEGER" +
-      ",len_min INTEGER NOT NULL" +
-      ")");
-    await knex.raw("CREATE TABLE movies_tags_array (" +
-      "id serial PRIMARY KEY" +
-      ",movie_id INTEGER" +
-      ",tag_id INTEGER" +
-      ",FOREIGN KEY(movie_id) REFERENCES movies(id)" +
-      ",FOREIGN KEY(tag_id) REFERENCES cinema_tags(id)" +
-      ")");
-    await knex.raw("CREATE TABLE movies_genres_array (" +
-      "id serial PRIMARY KEY" +
-      ",movie_id INTEGER" +
-      ",genre_id INTEGER" +
-      ",FOREIGN KEY(movie_id) REFERENCES movies(id)" +
-      ",FOREIGN KEY(genre_id) REFERENCES cinema_genres(id)" +
-      ")");
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(MoviesDB.tableName, function (table) {
+        table.increments(MoviesDB.fields.id).primary().notNullable();
+        table.enum(MoviesDB.fields.status, CMovieGroups).notNullable();
+        table.string(MoviesDB.fields.title).notNullable();
+        table.string(MoviesDB.fields.cover_url).notNullable();
+        table.string(MoviesDB.fields.notes);
+        table.smallint(MoviesDB.fields.len_min).notNullable();
+        table.smallint(MoviesDB.fields.score);
+        table.smallint(MoviesDB.fields.rewatched_times);
+      });
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(MoviesGenresDB.tableName, function (table) {
+        table.increments(MoviesGenresDB.fields.id).primary().notNullable();
+        table.foreign(MoviesGenresDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
+        table.foreign(MoviesGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
+      });
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(MoviesTagsDB.tableName, function (table) {
+        table.increments(MoviesTagsDB.fields.id).primary().notNullable();
+        table.foreign(MoviesTagsDB.fields.movie_id).references(`${MoviesDB.tableName}.${MoviesDB.fields.id}`).notNullable();
+        table.foreign(MoviesTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
+      });
 
-    await knex.raw("CREATE TABLE tv_shows (" +
-      "id serial PRIMARY KEY NOT NULL" +
-      ",status TEXT NOT NULL" +
-      ",title TEXT NOT NULL" +
-      ",cover_url TEXT NOT NULL" +
-      ",notes TEXT" +
-      ",score TEXT" + // example: `1:9,5:10` meaning season 1 score 9 and season 5 score 10
-      ",rewatched_times TEXT" + // example: `1:9,5:10`
-      ",episodes_count TEXT" + // example: `1:9,5:10`
-      ",avg_ep_len_min INTEGER NOT NULL" +
-      ",last_watched_season INTEGER" +
-      ",last_watched_episode INTEGER" +
-      ")");
-    await knex.raw("CREATE TABLE tv_shows_tags_array (" +
-      "id serial PRIMARY KEY" +
-      ",tv_show_id INTEGER" +
-      ",tag_id INTEGER" +
-      ",FOREIGN KEY(tv_show_id) REFERENCES tv_shows(id)" +
-      ",FOREIGN KEY(tag_id) REFERENCES cinema_tags(id)" +
-      ")");
-    await knex.raw("CREATE TABLE tv_shows_genres_array (" +
-      "id serial PRIMARY KEY" +
-      ",tv_show_id INTEGER" +
-      ",genre_id INTEGER" +
-      ",FOREIGN KEY(tv_show_id) REFERENCES tv_shows(id)" +
-      ",FOREIGN KEY(genre_id) REFERENCES cinema_genres(id)" +
-      ")");
+
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(TvShowsDB.tableName, function (table) {
+        table.increments(TvShowsDB.fields.id).primary().notNullable();
+        table.enum(TvShowsDB.fields.status, CTvShowGroups).notNullable();
+        table.string(TvShowsDB.fields.title).notNullable();
+        table.string(TvShowsDB.fields.cover_url).notNullable();
+        table.string(TvShowsDB.fields.notes);
+        table.smallint(TvShowsDB.fields.avg_ep_len_min).notNullable();
+        table.string(TvShowsDB.fields.score);
+        table.string(TvShowsDB.fields.rewatched_times);
+        table.string(TvShowsDB.fields.episodes_count);
+        table.smallint(TvShowsDB.fields.last_watched_season);
+        table.smallint(TvShowsDB.fields.last_watched_episode);
+      });
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(TVShowsGenresDB.tableName, function (table) {
+        table.increments(TVShowsGenresDB.fields.id).primary().notNullable();
+        table.foreign(TVShowsGenresDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
+        table.foreign(TVShowsGenresDB.fields.genre_id).references(`${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.id}`).notNullable();
+      });
+    await knex.schema
+      .withSchema(DB.schema)
+      .createTable(TVShowsTagsDB.tableName, function (table) {
+        table.increments(TVShowsTagsDB.fields.id).primary().notNullable();
+        table.foreign(TVShowsTagsDB.fields.tv_show_id).references(`${TvShowsDB.tableName}.${TvShowsDB.fields.id}`).notNullable();
+        table.foreign(TVShowsTagsDB.fields.tag_id).references(`${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.id}`).notNullable();
+      });
   },
 
   down: async (DB: IDBAdapter) => {
     const knex = DB.getKnex();
 
-    await knex.raw("DROP TABLE tv_shows_genres_array");
-    await knex.raw("DROP TABLE tv_shows_tags_array");
-    await knex.raw("DROP TABLE tv_shows");
-    await knex.raw("DROP TABLE movies_genres_array");
-    await knex.raw("DROP TABLE movies_tags_array");
-    await knex.raw("DROP TABLE movies");
-    await knex.raw("DROP TABLE cinema_genres");
-    await knex.raw("DROP TABLE cinema_tags");
+    await knex.schema.withSchema(DB.schema).dropTable(MoviesGenresDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(MoviesTagsDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(MoviesDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(TVShowsGenresDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(TVShowsTagsDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(TvShowsDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(CinemaGenresDB.tableName);
+    await knex.schema.withSchema(DB.schema).dropTable(CinemaTagsDB.tableName);
   }
 }

@@ -1,6 +1,28 @@
 import { DBEntityManager, EDBFieldTypes } from "./interface";
-import { EDataGroups } from "@api/types";
-import {CTvShowGroups, fromSeasonList, toSeasonList} from "@api/tvshows/index.p";
+import {CTvShowGroups, EDataGroups} from "./types";
+
+function fromSeasonList(
+  s: string,
+): { [season: number]: number | undefined } {
+  // @ts-ignore // broken interface of .reduce
+  return s
+    .split(',')
+    .reduce<{ [season: number]: number }>((acc, data) => {
+      if (data.length > 0) {
+        const [season, count] = data.split(':');
+        acc[Number(season)] = Number(count);
+      }
+      return acc;
+    }, {})
+}
+
+function toSeasonList(obj: { [season: number]: number | undefined }): string {
+  return Object.keys(obj)
+    .map((season) =>
+      // @ts-ignore
+      `${season}:${obj[season]}`)
+    .join(',');
+}
 
 export const TvShowsDB = new DBEntityManager(
   "tv_shows",

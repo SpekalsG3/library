@@ -1,5 +1,4 @@
 import {Handle, handler} from '../utils/handler'
-import { EDataGroups } from '../types';
 import { runChecks } from '../utils/run-checks';
 import { isValidUrl } from "../utils/is-valid-url";
 import { TVShowDTO, TVShowDTOEditable, TvShowsDB } from "../../../entities/tv-shows";
@@ -8,31 +7,7 @@ import { CinemaTagsDB } from "../../../entities/cinema-tags";
 import { DBEntityManager } from "../../../entities/interface";
 import { TVShowsGenresDB } from "../../../entities/tv-shows-genres-array";
 import { TVShowsTagsDB } from "../../../entities/tv-shows-tags-array";
-
-export function fromSeasonList(
-  s: string,
-): { [season: number]: number | undefined } {
-  // @ts-ignore // broken interface of .reduce
-  return s
-    .split(',')
-    .reduce<{ [season: number]: number }>((acc, data) => {
-      if (data.length > 0) {
-        const [season, count] = data.split(':');
-        acc[Number(season)] = Number(count);
-      }
-      return acc;
-    }, {})
-}
-
-export function toSeasonList(obj: { [season: number]: number | undefined }): string {
-  return Object.keys(obj)
-    .map((season) =>
-      // @ts-ignore
-      `${season}:${obj[season]}`)
-    .join(',');
-}
-
-export const CTvShowGroups = [EDataGroups.planned, EDataGroups.completed, EDataGroups.dropped, EDataGroups.watching];
+import {CTvShowGroups, EDataGroups} from "../../../entities/types";
 
 const get: Handle<{
   [id: number]: TVShowDTO,
