@@ -9,11 +9,11 @@
       - [x] shift+n - add new item
   - [x] Separate Movies and Tv Shows
 - Database update
-  - [ ] UI to connect to db
+  - [x] UI to connect to db
   - [ ] Storage adapters
     - [ ] Sqlite
     - [x] Postgres
-  - [ ] Entities to do CRUD using adapters
+  - [x] Entities to do CRUD using adapters
   - [ ] Import/export of db
   - [ ] Convert from one storage to another
   - [ ] Migrations
