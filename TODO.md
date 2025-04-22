@@ -23,9 +23,10 @@
   - [ ] UI to create new categories
     - [ ] save user-defined entity schema
     - [ ] dynamic entity tables
-  - [ ] Search
   - [ ] Action feedback popup (error, success)
+- Improvements
+  - [ ] Search
+  - [ ] Existing genres/tags suggesting
 - Bugs
-  - [ ] Movies/TVShows tags/genres array table gets populated with
-duplicates on update because there's no check if existing link
-already exists
+  - [x] Movies/TVShows tags/genres array table gets populated with
+duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid

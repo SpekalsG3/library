@@ -67,8 +67,8 @@ const put: Handle<undefined> = async function (req, res) {
       request: string[],
       sourceManager: DBEntityManager<{ id: string, name: string }, any, { id: number, name: string }>,
       arrayTable: DBEntityManager<{ id: string }, any, { id: number }>,
-      arrayIdMapName: string,
-      arraySourceIdName: string,
+      entityIdField: string,
+      sourceIdField: string,
     ) => {
       const knex = global.DB!.db.getKnex();
       if (request.length > 0) {
@@ -88,24 +88,24 @@ const put: Handle<undefined> = async function (req, res) {
           .table(arrayTable.tableName)
           .select<[{
             id: number,
-            arrayId: number,
-          }]>(`${sourceManager.fields.id} as id`, `${arraySourceIdName} as arrayId`)
+            sourceId: number,
+          }]>(`${arrayTable.fields.id} as id`, `${sourceIdField} as sourceId`)
           .where({
-            [arraySourceIdName]: entityId,
+            [entityIdField]: entityId,
           });
 
         const arrayById = arrayRaw.reduce<{ [id: number]: number | undefined }>((acc, el) => {
-          acc[el.arrayId] = el.id;
+          acc[el.sourceId] = el.id;
           return acc;
         }, {});
 
-        const arrayInserts: number[] = [];
+        const insertSourceIds: number[] = [];
         for (const listNameRaw of request) {
           const listName = listNameRaw.toLowerCase();
-          let listId = listByName[listName];
+          let sourceId = listByName[listName];
 
-          if (listId === undefined) {
-            // if source element does not exist at all, create and create link
+          if (sourceId === undefined) {
+            // if source element does not exist at all, create element and create link
             const [e] = await knex
               .table(sourceManager.tableName)
               .insert({
@@ -114,40 +114,46 @@ const put: Handle<undefined> = async function (req, res) {
               .returning<[{
                 id: number,
               }]>(`${sourceManager.fields.id} as id`);
-            listId = e.id;
-            listByName[listName] = listId;
-            arrayInserts.push(listId);
-          } else if (!arrayById[listId]) {
-            // if source element exists and there's no link, create link
-            arrayInserts.push(listId);
+            sourceId = e.id;
+            listByName[listName] = sourceId;
+            insertSourceIds.push(sourceId);
+          } else {
+            // is source element exists
+            if (arrayById[sourceId]) {
+              // and there's a link, remove as requires no processing
+              delete arrayById[sourceId];
+            } else {
+              // and there's no link, create link
+              insertSourceIds.push(sourceId);
+            }
           }
         }
 
-        if (arrayInserts.length > 0) {
+        if (insertSourceIds.length > 0) {
           await knex.table(arrayTable.tableName)
             .insert(
-              arrayInserts.map((listId) => ({
-                [arrayIdMapName]: listId,
-                [arraySourceIdName]: entityId,
+              insertSourceIds.map((sourceId) => ({
+                [sourceIdField]: sourceId,
+                [entityIdField]: entityId,
               })),
             );
         }
 
-        const deleteIds = Object.values(arrayById);
-        if (deleteIds.length > 0) {
+        const deleteArrayIds = Object.values(arrayById);
+        if (deleteArrayIds.length > 0) {
           await knex.table(arrayTable.tableName)
             .delete()
             .whereIn(
               // @ts-ignore // in doc, `whereIn` also accepts `(string, any[])`
               arrayTable.fields.id,
-              deleteIds,
+              deleteArrayIds,
             );
         }
       } else {
         await knex.table(arrayTable.tableName)
           .delete()
           .where({
-            [arraySourceIdName]: entityId,
+            [entityIdField]: entityId,
           });
       }
     }
@@ -157,16 +163,16 @@ const put: Handle<undefined> = async function (req, res) {
       dtoGenres,
       CinemaGenresDB,
       MoviesGenresDB,
-      MoviesGenresDB.fields.genre_id,
       MoviesGenresDB.fields.movie_id,
+      MoviesGenresDB.fields.genre_id,
     );
     await updateArray(
       movieId,
       dtoTags,
       CinemaTagsDB,
       MoviesTagsDB,
-      MoviesTagsDB.fields.tag_id,
       MoviesTagsDB.fields.movie_id,
+      MoviesTagsDB.fields.tag_id,
     );
   } catch (e) {
     await global.DB.db.rollback();
