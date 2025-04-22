@@ -11,7 +11,7 @@
 - Database update
   - [x] UI to connect to db
   - [ ] Database adapters
-    - [ ] Sqlite
+    - [x] Sqlite
     - [x] Postgres
     - [ ] re-define CRUD interface to hide knex under the hood
   - [x] Entities to do CRUD using adapters
