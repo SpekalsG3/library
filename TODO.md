@@ -31,8 +31,9 @@
   - [ ] Existing genres/tags suggesting
   - [ ] Add extra confirmation when deciding to apply migrations
   - [ ] Add button to forget saved db connection
+  - [ ] Flickering when existing conn is valid (from `load-connection` back to `content`)
+    - First content request should only happen after `POST /api/db` has returned success
 - Bugs
   - [x] Movies/TVShows tags/genres array table gets populated with
   duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid
-  - [ ] Librewolf: on some reload, fetch breaks and request is not executed
-  - [ ] 
+  - [x] Librewolf: on some reload, fetch breaks and request is not executed

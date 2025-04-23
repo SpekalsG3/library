@@ -92,9 +92,10 @@ const get: Handle<{
     };
     return acc;
   }, {});
-  res
+
+  return res
     .status(200)
-    .send({
+    .json({
       success: true,
       data: data,
     });

@@ -35,9 +35,8 @@ export class CachedUseFetch<K, T extends any> {
           });
 
           setData({});
-
         } catch (e) {
-          console.log('e', e);
+          console.error('useFetch request failed:', e);
         }
       }
 
@@ -50,7 +49,7 @@ export class CachedUseFetch<K, T extends any> {
       }
     }, [this.currentKey[0]]);
 
-    return data
+    return data;
   }
 
   getState(): CachedUseFetchItem<T> | undefined {

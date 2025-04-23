@@ -29,7 +29,7 @@ function el() {
   const [connOpts, setConnOptsLocal] = useState<ConnectionOptions<ConnectionTypes> | null>(null);
   const [defaultConnOpts, setConnOpts] = useLocalStorage<ConnectionOptions<ConnectionTypes>>(StorageConnectionKey);
   const [result, setResult] = useState<TryConnectionResult>({
-    isSuccess: defaultConnOpts !== null,
+    isSuccess: false,
   });
   const [isLoading, setIsLoading] = useState(true);
 
