@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react";
-import { IRequestResponseSuccess } from "@api/types";
+import {IResSuccess} from "@api/types";
+import {myRequest, MyRequestMethods} from "./request";
 
 export type CachedUseFetchItem<T> = {
   current: T,
@@ -7,7 +8,7 @@ export type CachedUseFetchItem<T> = {
 
 export type CachedUseFetchRef = object;
 
-export class CachedUseFetch<K, T> {
+export class CachedUseFetch<K, T extends any> {
   private readonly cachedState = useRef(new Map<K, CachedUseFetchItem<T>>());
   private readonly currentKey;
   private setCurrentData: (data: object) => void = () => {};
@@ -21,18 +22,31 @@ export class CachedUseFetch<K, T> {
     this.setCurrentData = setData;
 
     useEffect(() => {
+      const doFetch = async (key: K, url: URL) => {
+        try {
+          const res = await myRequest<undefined, IResSuccess<T>>(url.pathname, {
+            method: MyRequestMethods.GET,
+            query: url.searchParams,
+          });
+
+          this.cachedState.current.set(key, {
+            // @ts-ignore
+            current: res.body.data,
+          });
+
+          setData({});
+
+        } catch (e) {
+          console.log('e', e);
+        }
+      }
+
       const cached = this.getState();
       if (cached) {
         setData({});
       } else {
-        fetch(getUrl(this.currentKey[0]))
-          .then((r) => r.json())
-          .then((r: IRequestResponseSuccess<T>) => {
-            this.cachedState.current.set(this.currentKey[0], {
-              current: r.data,
-            });
-            setData({});
-          })
+        const key = this.currentKey[0];
+        void doFetch(key, getUrl(key));
       }
     }, [this.currentKey[0]]);
 

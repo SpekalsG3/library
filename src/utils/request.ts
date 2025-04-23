@@ -1,4 +1,7 @@
-import {IRequestResponseSuccess} from "@api/types";
+import {IResSuccess} from "@api/types";
+import * as querystring from "node:querystring";
+import * as process from "node:process";
+import {bool} from "prop-types";
 
 export enum MyRequestMethods {
     POST = "POST",
@@ -27,12 +30,12 @@ export class MyRequestError<R> extends Error {
     }
 }
 
-export async function myRequest<B, R> (url: string, options: {
+export async function myRequest<B, R> (pathname: string, options: {
     method: MyRequestMethods,
     headers?: Record<string, string>,
     body?: string | B,
-    query?: Record<string, string>,
-}) {
+    query?: URLSearchParams | Record<string, string>,
+}): Promise<MyResponse<R>> {
     let body: string | undefined;
     let contentType: string | undefined;
     if (options.body) {
@@ -45,10 +48,20 @@ export async function myRequest<B, R> (url: string, options: {
         }
     }
 
+    let finalUrl = pathname;
+    if (options.query) {
+        const params = new URLSearchParams(options.query)
+        if (finalUrl.includes("?")) {
+            finalUrl += "&" + params.toString();
+        } else {
+            finalUrl += "?" + params.toString();
+        }
+    }
+
     let res: Response;
     try {
         res = await new Promise<Response>((resolve, reject) => {
-            fetch(url, {
+            fetch(finalUrl, {
                 method: options.method,
                 headers: {
                     ...options.headers,
@@ -67,11 +80,29 @@ export async function myRequest<B, R> (url: string, options: {
     }
 
     if (res.status === 200 || res.status === 201) {
-        return {
-            body: await res.json(),
-        } as {
-            body: IRequestResponseSuccess<R>,
+        let body: any | null = null;
+
+        const resContentType = res.headers.get("Content-Type");
+        if (resContentType) {
+            if (resContentType.includes("application/json")) {
+                body = await res.json();
+            } else if (resContentType.includes("text/plain")) {
+                body = await res.text();
+            }
         }
+
+        if (body === null) {
+            throw new MyRequestError<any>({
+                response: {
+                    body: await res.arrayBuffer(),
+                },
+                message: `Unhandled response type: ${resContentType}`,
+            });
+        }
+
+        return {
+            body: body,
+        };
     }
 
     throw new MyRequestError<R>({

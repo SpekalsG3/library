@@ -6,7 +6,7 @@ const LocalStorageContext = createContext<{
     nextId: number,
     map: Record<string, Record<number, (value: any) => void>>,
   }>
-}>({})
+}>({} as any)
 
 export function LocalStorageProvider(props: PropsWithChildren<{
 }>) {

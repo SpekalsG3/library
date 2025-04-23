@@ -8,6 +8,7 @@ import { MovieDTO } from "../../../../../../../entities/movies";
 import { UpdateMovie } from "../../../update-title";
 import {IMoviesCreateDTO} from "@api/movies/index.p";
 import {EDataGroups} from "../../../../../../../entities/types";
+import {IResSuccess} from "@api/types";
 
 export function AddNewMovie(props: {
   onClose: () => void,
@@ -23,7 +24,7 @@ export function AddNewMovie(props: {
     };
 
     try {
-      const res = await myRequest<IMoviesCreateDTO, number>(`/api/movies`, {
+      const res = await myRequest<IMoviesCreateDTO, IResSuccess<number>>(`/api/movies`, {
         method: MyRequestMethods.POST,
         body: body,
       });

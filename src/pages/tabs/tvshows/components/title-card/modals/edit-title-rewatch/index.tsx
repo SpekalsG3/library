@@ -32,7 +32,6 @@ export function EditTitleRewatch (props: {
         body: data,
       });
       props.itemData.rewatched_times = newRewatch.current;
-      props.itemData.updated_at = Date.now();
       props.cachedData.updateCurrentState((s) => {
         s[props.itemData.id] = props.itemData;
         return s;

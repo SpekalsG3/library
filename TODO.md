@@ -34,4 +34,5 @@
 - Bugs
   - [x] Movies/TVShows tags/genres array table gets populated with
   duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid
-  - [ ] With sqlite(?) tabs on one panel don't load content properly
+  - [ ] Librewolf: on some reload, fetch breaks and request is not executed
+  - [ ] 

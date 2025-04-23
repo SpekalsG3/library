@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { IRequestResponseSuccess } from "../types";
+import { IResSuccess } from "../types";
 
 export type Handle<T> = (
     req: NextApiRequest,
-    res: NextApiResponse<IRequestResponseSuccess<T>>,
+    res: NextApiResponse<IResSuccess<T>>,
 ) => void | Promise<void>
 
 function notFound (

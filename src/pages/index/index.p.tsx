@@ -5,12 +5,14 @@ import {LoadConnection, StorageConnectionKey} from "./components/load-connection
 
 import styles from './styles.module.css'
 import {useEffect, useState} from "react";
-import {ConnectionOptions, ConnectionTypes, ISaveConnectionMigrationRes, ISaveConnectionRes} from "@api/db/index.p";
+import {ISaveConnectionMigrationRes, ISaveConnectionRes} from "@api/db/index.p";
 import {ModalElement} from "@ui-kit/ux/layers/element";
 import Button from "@ui-kit/ui/button";
 import {myRequest, MyRequestMethods} from "../../utils/request";
 import {IApplyMigrationsRes} from "@api/db/migrations.p";
 import {useLocalStorage} from "../../utils/use-local-storage";
+import {ConnectionOptions, ConnectionTypes} from "@database/types";
+import {IResSuccess} from "@api/types";
 
 type ConnOptsNullable = null | ConnectionOptions<ConnectionTypes>;
 
@@ -37,7 +39,7 @@ function el() {
     setConnOpts(connection);
 
     try {
-      const response = await myRequest<NonNullable<ConnOptsNullable>, ISaveConnectionRes>('/api/db', {
+      const response = await myRequest<NonNullable<ConnOptsNullable>, IResSuccess<ISaveConnectionRes>>('/api/db', {
         method: MyRequestMethods.POST,
         body: connection,
       });
@@ -73,7 +75,7 @@ function el() {
     setIsLoading(true);
 
     try {
-      const res = await myRequest<unknown, IApplyMigrationsRes>('/api/db/migrations', {
+      const res = await myRequest<unknown, IResSuccess<IApplyMigrationsRes>>('/api/db/migrations', {
         method: MyRequestMethods.POST,
       });
 
@@ -154,6 +156,6 @@ function el() {
   </>
 }
 
-export const IndexPage = dynamic(() => Promise.resolve(el), {
+export default dynamic(() => Promise.resolve(el), {
   ssr: false,
 })

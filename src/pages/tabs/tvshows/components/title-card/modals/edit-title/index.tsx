@@ -1,5 +1,5 @@
 import React, { ReactNode, useRef, useState } from "react";
-import { IRequestResponseSuccess } from "@api/types";
+import { IResSuccess } from "@api/types";
 import { UpdateTvShow } from "../../../update-title";
 
 import styles from "./styles.module.css"
@@ -36,7 +36,7 @@ export function EditTitle(props: {
     };
 
     try {
-      await myRequest<IEditTvShowReq, IRequestResponseSuccess<undefined>>(`/api/tvshows/${props.itemData.id}`, {
+      await myRequest<IEditTvShowReq, IResSuccess<undefined>>(`/api/tvshows/${props.itemData.id}`, {
         method: MyRequestMethods.PUT,
         body: body,
       });

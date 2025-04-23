@@ -4,7 +4,7 @@ import Button from "@ui-kit/ui/button";
 import {EInputType, Input} from "@ui-kit/ui/input";
 
 import styles from './styles.module.css'
-import {ConnectionOptions, ConnectionTypes} from "@api/db/index.p";
+import {ConnectionOptions, ConnectionTypes} from "@database/types";
 
 export const StorageConnectionKey = "storage-connection";
 
@@ -14,15 +14,18 @@ export function LoadConnection(props: {
   onConnect: (opts: ConnectionOptions<ConnectionTypes>) => void,
 }) {
   function defaultConnOptions() {
+    // @ts-ignore
     const opts: {
       [T in ConnectionTypes]: ConnectionOptions<T>['options']
     } = {};
     for (const type of Object.values(ConnectionTypes)) {
       if (props.defaultConn) {
+        // @ts-ignore
         opts[type] = props.defaultConn.type === type
           ? props.defaultConn.options
           : {};
       } else {
+        // @ts-ignore
         opts[type] = {};
       }
     }

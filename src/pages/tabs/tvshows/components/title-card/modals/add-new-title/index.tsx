@@ -8,6 +8,7 @@ import { TVShowDTO } from "../../../../../../../entities/tv-shows";
 import {ICreateTvSHowItemReq} from "@api/tvshows/index.p";
 import { UpdateTvShow } from "../../../update-title";
 import {EDataGroups} from "../../../../../../../entities/types";
+import {IResSuccess} from "@api/types";
 
 export function AddNewTvShowModal(props: {
   onClose: () => void,
@@ -24,13 +25,11 @@ export function AddNewTvShowModal(props: {
     };
 
     try {
-      const res = await myRequest<ICreateTvSHowItemReq, number>(`/api/tvshows`, {
+      const res = await myRequest<ICreateTvSHowItemReq, IResSuccess<number>>(`/api/tvshows`, {
         method: MyRequestMethods.POST,
         body: body,
       });
       data.current.id = res.body.data;
-      data.current.created_at = Date.now();
-      data.current.updated_at = Date.now();
       props.cachedData.updateCurrentState((s) => {
         s[data.current.id] = data.current;
         return s;
