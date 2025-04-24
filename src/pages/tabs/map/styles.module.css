@@ -1,0 +1,11 @@
+.content {
+    position: relative;
+    margin-top: 25px;
+    height: calc(100vh - 50px);
+}
+
+.map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
