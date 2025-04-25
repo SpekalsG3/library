@@ -40,7 +40,6 @@ body {
   background: rgb(var(--main));
   min-height: 100vh;
   color: rgb(var(--text-regular));
-  -webkit-text-fill-color: rgb(var(--text-regular));
 }
 
 a {

@@ -50,4 +50,5 @@
     background: none;
     border-bottom: 1px solid rgb(var(--outline));
     caret-color: rgb(var(--text-regular));
+    color: rgb(var(--text-regular));
 }

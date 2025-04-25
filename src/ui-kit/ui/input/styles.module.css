@@ -8,4 +8,5 @@
     padding: 3px;
     resize: vertical;
     caret-color: rgb(var(--text-regular));
+    color: rgb(var(--text-regular));
 }
