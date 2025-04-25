@@ -37,3 +37,5 @@
   - [x] Movies/TVShows tags/genres array table gets populated with
   duplicates on update because `deleteArrayIds`/`insertSourceIds` is invalid
   - [x] Librewolf: on some reload, fetch breaks and request is not executed
+  - [ ] Popup to create new CardPanel item does not use active group as default "Type"
+  - [ ] TvShow rating does not "interpolate" scores for next seasons with unset values
