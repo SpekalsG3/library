@@ -14,3 +14,35 @@
     background: none;
 }
 
+.edit {
+    background: rgb(var(--main));
+    padding: 7px 7px 9px 7px;
+    z-index: 1000;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border-radius: 5px;
+}
+
+.editClose {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 0 6px 2px 7px;
+}
+
+.editTitle {
+    text-align: center;
+}
+
+.editField {
+    margin-top: 10px;
+}
+
+.editTags {
+    max-width: 200px;
+}
+
+.editHighlight {
+    background: rgb(var(--highlight));
+}
