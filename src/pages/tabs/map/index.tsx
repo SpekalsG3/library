@@ -42,15 +42,19 @@ export default function MapPage() {
           method: MyRequestMethods.GET,
         });
 
-        for (const el of res.body.data) {
+        const data = res.body.data;
+        for (const el of data) {
           createBm(el);
+        }
+        if (data.length > 0) {
+          nextIdRef.current = data[data.length - 1].id + 1;
         }
       } catch (e) {
         console.error('Failed fetch bookmarks', e);
       }
     }
     void fetchBms();
-  }, [])
+  }, []);
 
   function onMarkerClick(id: number) {
     return (e: LeafletMouseEvent) => {
@@ -62,19 +66,6 @@ export default function MapPage() {
       setBmCurrent(bmCurrentRef.current);
       bmCurrentRef.current.iconEl.classList.add(styles.bmSelected);
     }
-  }
-  function closeBmEdit() {
-    setBmCurrent(null);
-    bmCurrentRef.current!.iconEl.classList.remove(styles.bmSelected);
-    bmCurrentRef.current = null;
-  }
-  function deleteActiveBm() {
-    setBmCurrent(null);
-    bmsRef.current[bmCurrentRef.current!.data.id].marker.remove();
-    delete bmsRef.current[bmCurrentRef.current!.data.id];
-  }
-  function saveActiveBm() {
-    bmsRef.current[bmCurrentRef.current!.data.id].data = bmCurrentRef.current!.data;
   }
 
   function createBm(
@@ -101,6 +92,22 @@ export default function MapPage() {
       .addEventListener("click", onMarkerClick(bm.id))
       .addTo(bmsLayerRef.current);
   }
+
+  function closeBmEdit() {
+    // save
+    bmsRef.current[bmCurrentRef.current!.data.id].data = bmCurrentRef.current!.data;
+    // close
+    bmCurrentRef.current!.iconEl.classList.remove(styles.bmSelected);
+    bmCurrentRef.current = null;
+    setBmCurrent(null);
+  }
+  function deleteActiveBm() {
+    bmsRef.current[bmCurrentRef.current!.data.id].marker.remove();
+    delete bmsRef.current[bmCurrentRef.current!.data.id];
+    bmCurrentRef.current = null;
+    setBmCurrent(null);
+  }
+
   function onMapClick(e: LeafletMouseEvent) {
     const id = nextIdRef.current++;
     createBm({
@@ -113,6 +120,7 @@ export default function MapPage() {
       created_at: '',
       updated_at: '',
     });
+    bmsRef.current[id].marker.fire("click");
   }
 
   function addListeners() {
@@ -142,7 +150,6 @@ export default function MapPage() {
         value={bmCurrent.data.notes}
         onChange={v => bmCurrentRef.current!.data.notes = v}
       />
-      <Button className={styles.editField} onClick={saveActiveBm} text={"Save"} />
       <Button className={cn(styles.editField, styles.editHighlight)} onClick={deleteActiveBm} text={"Delete"} />
     </div>}
 
