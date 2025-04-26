@@ -33,10 +33,10 @@ const get: Handle<{
     });
   const genresAll = await global.DB.db.getKnex()
     .table(MoviesGenresDB.tableName)
-    .select<[{
+    .select<{
       movieId: number,
       name: string,
-    }]>(
+    }[]>(
       `${MoviesGenresDB.tableName}.${MoviesGenresDB.fields.movie_id} as movieId`,
       `${CinemaGenresDB.tableName}.${CinemaGenresDB.fields.name} as name`,
     )
@@ -48,10 +48,10 @@ const get: Handle<{
     );
   const tagsAll = await global.DB.db.getKnex()
     .table(MoviesTagsDB.tableName)
-    .select<[{
+    .select<{
       movieId: number,
       name: string,
-    }]>(
+    }[]>(
       `${MoviesTagsDB.tableName}.${MoviesTagsDB.fields.movie_id} as movieId`,
       `${CinemaTagsDB.tableName}.${CinemaTagsDB.fields.name} as name`,
     )
