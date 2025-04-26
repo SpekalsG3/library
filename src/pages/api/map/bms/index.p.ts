@@ -56,7 +56,7 @@ const get: Handle<MapBookmarksDTO[]> = async (req, res) => {
   });
 }
 
-function validateItemData (item: any): MapBookmarksDTOEditable {
+export function validateItemData (item: any): MapBookmarksDTOEditable {
   runChecks([
     [typeof item === "object", "Field `body.item` is not an object"],
   ]);

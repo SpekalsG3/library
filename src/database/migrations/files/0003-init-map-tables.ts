@@ -26,8 +26,14 @@ export default <Migration> {
       })
       .createTable(MapBmsTagsArrayDB.tableName, (table) => {
         table.increments(MapBmsTagsArrayDB.fields.id).notNullable().primary();
-        table.integer(MapBmsTagsArrayDB.fields.map_bm_id).notNullable();
-        table.integer(MapBmsTagsArrayDB.fields.map_tag_id).notNullable();
+        table
+          .integer(MapBmsTagsArrayDB.fields.map_bm_id)
+          .notNullable()
+          .references(`${MapBookmarksDB.tableName}.${MapBookmarksDB.fields.id}`);
+        table
+          .integer(MapBmsTagsArrayDB.fields.map_tag_id)
+          .notNullable()
+          .references(`${MapTagsDB.tableName}.${MapTagsDB.fields.id}`);
       });
   },
 
