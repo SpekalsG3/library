@@ -114,29 +114,35 @@ const put: Handle<undefined> = async (req, res) => {
         [MapBookmarksDB.fields.id]: bmId,
       });
 
-    await knex
-      .table(MapBmsTagsArrayDB.tableName)
-      .delete()
-      .whereIn(
-        MapBmsTagsArrayDB.fields.id,
-        tagLinksToDelete,
-      );
-
-    const newTags = await knex
-      .table(MapTagsDB.tableName)
-      .insert(tagsToInsert)
-      .returning<{
-        id: number
-      }[]>(`${MapTagsDB.tableName}.${MapTagsDB.fields.id} as id`);
-    for (const newTag of newTags) {
-      tagLinksToInsert.push({
-        map_tag_id: newTag.id,
-        map_bm_id: bmId,
-      })
+    if (tagLinksToDelete.length > 0) {
+      await knex
+        .table(MapBmsTagsArrayDB.tableName)
+        .delete()
+        .whereIn(
+          MapBmsTagsArrayDB.fields.id,
+          tagLinksToDelete,
+        );
     }
-    await knex
-      .table(MapBmsTagsArrayDB.tableName)
-      .insert(tagLinksToInsert);
+
+    if (tagsToInsert.length > 0) {
+      const newTags = await knex
+        .table(MapTagsDB.tableName)
+        .insert(tagsToInsert)
+        .returning<{
+          id: number
+        }[]>(`${MapTagsDB.tableName}.${MapTagsDB.fields.id} as id`);
+      for (const newTag of newTags) {
+        tagLinksToInsert.push({
+          map_tag_id: newTag.id,
+          map_bm_id: bmId,
+        })
+      }
+    }
+    if (tagLinksToInsert.length > 0) {
+      await knex
+        .table(MapBmsTagsArrayDB.tableName)
+        .insert(tagLinksToInsert);
+    }
 
     await global.DB.db.commit();
   } catch (e) {
@@ -167,11 +173,15 @@ const del: Handle<undefined> = async (req, res) => {
         [MapBmsTagsArrayDB.fields.map_bm_id]: bmId,
       })
 
-    await knex
+    const n = await knex
       .table(MapBookmarksDB.tableName)
+      .delete()
       .where({
         [MapBookmarksDB.fields.id]: bmId,
       });
+    if (n === 0) {
+      throw new Error('Failed to delete any bm');
+    }
 
     await global.DB.db.commit();
   } catch (e) {
