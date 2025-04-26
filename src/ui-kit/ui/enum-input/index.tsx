@@ -1,4 +1,4 @@
-import {KeyboardEvent, useRef, useState, BaseSyntheticEvent, ReactElement} from "react";
+import {KeyboardEvent, useRef, useState, BaseSyntheticEvent, ReactElement, useEffect} from "react";
 
 import styles from './styles.module.css'
 
@@ -9,6 +9,9 @@ export function EnumInput (props: {
     className?: string,
 }) {
     const [values, setValues] = useState(props.values ?? []);
+    useEffect(() => {
+        setValues(props.values ?? []);
+    }, [props.values]);
     const lastElement = useRef<HTMLDivElement>(null);
     const inputElement = useRef<HTMLInputElement>(null);
 
@@ -67,7 +70,7 @@ export function EnumInput (props: {
             <div className={styles.inputTitle}>{props.title}</div>
             <div className={styles.inputBox}>
                 {
-                    values?.map((el, i, arr) => (
+                    values.map((el, i, arr) => (
                         <div
                             key={i}
                             {...{myindex: i}}

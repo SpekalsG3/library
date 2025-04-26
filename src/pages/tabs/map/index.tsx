@@ -16,46 +16,72 @@ import Button from "@ui-kit/ui/button";
 import {EInputType, Input} from "@ui-kit/ui/input";
 import {EnumInput} from "@ui-kit/ui/enum-input";
 
-interface IBMEdit {
-  notes?: string,
-  tags?: string[],
+interface IBookmark {
+  id: number,
+  title: string,
+  notes: string,
+  tags: string[],
+}
+interface IBMElement {
+  data: IBookmark,
+  marker: Marker,
+  iconEl: HTMLElement,
 }
 
 export default function MapPage() {
   const mapRef = useRef<TLMap>(null as any); // always set in handlers
   const bmsLayerRef = useRef<TLLayerGroup>(null as any);
-  const bmsListRef = useRef<Record<number, Marker>>({});
   const nextIdRef = useRef(0);
-  const [openedBM, setOpenedBM] = useState<number | null>(null);
-  const bmEditRef = useRef<IBMEdit>({});
+  const [bmCurrent, setBmCurrent] = useState<IBMElement | null>(null);
+  const bmCurrentRef = useRef(bmCurrent);
+
+  const bmsRef = useRef<Record<number, IBMElement>>({});
 
   function onMarkerClick(id: number) {
     return (e: LeafletMouseEvent) => {
-      setOpenedBM(id);
+      if (bmCurrentRef.current) {
+        closeBmEdit();
+      }
+      bmsRef.current[id].iconEl = e.target._icon;
+      bmCurrentRef.current = bmsRef.current[id];
+      setBmCurrent(bmCurrentRef.current);
+      bmCurrentRef.current.iconEl.classList.add(styles.bmSelected);
     }
   }
   function closeBmEdit() {
-    bmEditRef.current = {};
-    setOpenedBM(null);
+    setBmCurrent(null);
+    bmCurrentRef.current!.iconEl.classList.remove(styles.bmSelected);
+    bmCurrentRef.current = null;
   }
   function deleteActiveBm() {
-    console.log(openedBM);
-    bmsListRef.current[openedBM!].remove();
-    delete bmsListRef.current[openedBM!];
-    bmEditRef.current = {};
-    setOpenedBM(null);
+    setBmCurrent(null);
+    bmsRef.current[bmCurrentRef.current!.data.id].marker.remove();
+    delete bmsRef.current[bmCurrentRef.current!.data.id];
+  }
+  function saveActiveBm() {
+    bmsRef.current[bmCurrentRef.current!.data.id].data = bmCurrentRef.current!.data;
   }
 
-  function onMapClick(e: LeafletMouseEvent) {
+  function createBm(e: LeafletMouseEvent) {
+    const icon = new DivIcon({
+      html: ICON_BM("green"),
+      className: styles.bm,
+    });
     const marker = TLCreateMarker(e.latlng, {
-      icon: new DivIcon({
-        html: ICON_BM("green"),
-        className: styles.bm,
-      }),
+      icon: icon,
     });
 
     const id = nextIdRef.current++;
-    bmsListRef.current[id] = marker;
+    bmsRef.current[id] = {
+      data: {
+        id: id,
+        title: `${e.latlng.lat.toFixed(3)},${e.latlng.lng.toFixed(3)}`,
+        notes: '',
+        tags: [],
+      },
+      marker: marker,
+      iconEl: undefined as any, // unknown until mounted, will be set onclick
+    };
 
     marker
       .addEventListener("click", onMarkerClick(id))
@@ -63,16 +89,33 @@ export default function MapPage() {
   }
 
   function addListeners() {
-    mapRef.current.addEventListener("click", onMapClick);
+    mapRef.current.addEventListener("click", createBm);
   }
 
   return <div className={styles.content}>
-    {openedBM !== null && <div className={styles.edit}>
+    {bmCurrent && <div className={styles.edit}>
       <Button className={styles.editClose} text={"x"} onClick={closeBmEdit} />
-      <div className={styles.editTitle}>Edit bookmark</div>
-      <EnumInput className={cn(styles.editField, styles.editTags)} title={"Tags"} onChange={v => bmEditRef.current.tags = v} />
-      <Input className={styles.editField} type={EInputType.textarea} title={"Notes"} onChange={v => bmEditRef.current.notes = v} />
-      <Button className={styles.editField} onClick={() => {}} text={"Save"} />
+      <Input
+        className={styles.editTitle}
+        classNameInner={styles.editTitleInput}
+        type={EInputType.text}
+        value={bmCurrent.data.title}
+        onChange={v => bmCurrentRef.current!.data.title = v}
+      />
+      <EnumInput
+        title={"Tags"}
+        className={cn(styles.editField, styles.editTags)}
+        values={bmCurrent.data.tags}
+        onChange={v => bmCurrentRef.current!.data.tags = v}
+      />
+      <Input
+        title={"Notes"}
+        className={styles.editField}
+        type={EInputType.textarea}
+        value={bmCurrent.data.notes}
+        onChange={v => bmCurrentRef.current!.data.notes = v}
+      />
+      <Button className={styles.editField} onClick={saveActiveBm} text={"Save"} />
       <Button className={cn(styles.editField, styles.editHighlight)} onClick={deleteActiveBm} text={"Delete"} />
     </div>}
 

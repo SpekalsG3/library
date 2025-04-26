@@ -10,6 +10,19 @@
     width: 100%;
 }
 
+.bm {
+}
+.bmSelected:after {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    content: "";
+    width: 26px;
+    height: 26px;
+    box-shadow: 0 0 4px 2px rgb(var(--highlight-semi));
+    border-radius: 50%;
+}
+
 .divMarker {
     background: none;
 }
@@ -32,7 +45,11 @@
 }
 
 .editTitle {
+}
+.editTitleInput {
     text-align: center;
+    width: unset;
+    font-size: var(--size-mid);
 }
 
 .editField {

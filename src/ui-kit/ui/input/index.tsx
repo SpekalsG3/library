@@ -1,4 +1,4 @@
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import cn from 'classnames'
 
 import styles from './styles.module.css'
@@ -17,7 +17,7 @@ export function Input<
 > (props: {
     onChange: (value: V) => void,
     type: T,
-    title: string,
+    title?: string,
     tabIndex?: number,
     value?: V | null,
     placeholder?: V,
@@ -28,7 +28,10 @@ export function Input<
     classNameInner?: string,
     autoFocus?: boolean,
 }) {
-    const [value, setValue] = useState(props.value)
+    const [value, setValue] = useState(props.value);
+    useEffect(() => {
+        setValue(props.value);
+    }, [props.value]);
 
     const onInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         let data: (string) | (number | null);
@@ -60,7 +63,7 @@ export function Input<
 
     return (
         <div className={props.className}>
-            <div className={cn(styles.inputTitle, props.classNameTitle)}>{props.title}</div>
+            {props.title && <div className={cn(styles.inputTitle, props.classNameTitle)}>{props.title}</div>}
             {props.type === EInputType.textarea
                 ? <textarea
                     autoFocus={props.autoFocus}
