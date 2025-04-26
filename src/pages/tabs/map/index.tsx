@@ -1,10 +1,11 @@
-import React, {useRef, useState} from "react";
-import {MapContainer, LayerGroup, TileLayer} from "react-leaflet";
+import React, {useEffect, useRef, useState} from "react";
+import {LayerGroup, MapContainer, TileLayer} from "react-leaflet";
 import {
-  DivIcon,
+  DivIcon, LatLng,
   LayerGroup as TLLayerGroup,
   LeafletMouseEvent,
-  Map as TLMap, Marker,
+  Map as TLMap,
+  Marker,
   marker as TLCreateMarker,
 } from "leaflet";
 import cn from "classnames"
@@ -15,15 +16,12 @@ import {ICON_BM} from "./icons";
 import Button from "@ui-kit/ui/button";
 import {EInputType, Input} from "@ui-kit/ui/input";
 import {EnumInput} from "@ui-kit/ui/enum-input";
+import {myRequest, MyRequestMethods} from "../../../utils/request";
+import {IResSuccess} from "@api/types";
+import {MapBookmarksDTO} from "../../../entities/map-bookmarks";
 
-interface IBookmark {
-  id: number,
-  title: string,
-  notes: string,
-  tags: string[],
-}
 interface IBMElement {
-  data: IBookmark,
+  data: MapBookmarksDTO,
   marker: Marker,
   iconEl: HTMLElement,
 }
@@ -36,6 +34,23 @@ export default function MapPage() {
   const bmCurrentRef = useRef(bmCurrent);
 
   const bmsRef = useRef<Record<number, IBMElement>>({});
+
+  useEffect(() => {
+    async function fetchBms() {
+      try {
+        const res = await myRequest<undefined, IResSuccess<MapBookmarksDTO[]>>('/api/map/bms', {
+          method: MyRequestMethods.GET,
+        });
+
+        for (const el of res.body.data) {
+          createBm(el);
+        }
+      } catch (e) {
+        console.error('Failed fetch bookmarks', e);
+      }
+    }
+    void fetchBms();
+  }, [])
 
   function onMarkerClick(id: number) {
     return (e: LeafletMouseEvent) => {
@@ -62,34 +77,46 @@ export default function MapPage() {
     bmsRef.current[bmCurrentRef.current!.data.id].data = bmCurrentRef.current!.data;
   }
 
-  function createBm(e: LeafletMouseEvent) {
+  function createBm(
+    bm: MapBookmarksDTO,
+  ) {
     const icon = new DivIcon({
       html: ICON_BM("green"),
       className: styles.bm,
     });
-    const marker = TLCreateMarker(e.latlng, {
+    const marker = TLCreateMarker({
+      lng: bm.lng,
+      lat: bm.lat,
+    }, {
       icon: icon,
     });
 
-    const id = nextIdRef.current++;
-    bmsRef.current[id] = {
-      data: {
-        id: id,
-        title: `${e.latlng.lat.toFixed(3)},${e.latlng.lng.toFixed(3)}`,
-        notes: '',
-        tags: [],
-      },
+    bmsRef.current[bm.id] = {
+      data: bm,
       marker: marker,
       iconEl: undefined as any, // unknown until mounted, will be set onclick
     };
 
     marker
-      .addEventListener("click", onMarkerClick(id))
+      .addEventListener("click", onMarkerClick(bm.id))
       .addTo(bmsLayerRef.current);
+  }
+  function onMapClick(e: LeafletMouseEvent) {
+    const id = nextIdRef.current++;
+    createBm({
+      id: id,
+      title: `${e.latlng.lat.toFixed(3)},${e.latlng.lng.toFixed(3)}`,
+      lat: e.latlng.lat,
+      lng: e.latlng.lng,
+      notes: '',
+      tags: [],
+      created_at: '',
+      updated_at: '',
+    });
   }
 
   function addListeners() {
-    mapRef.current.addEventListener("click", createBm);
+    mapRef.current.addEventListener("click", onMapClick);
   }
 
   return <div className={styles.content}>
