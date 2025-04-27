@@ -33,7 +33,7 @@ export function useLocalStorage<T>(key: string): [T | null, (value: T | null) =>
       } else {
         data = null;
       }
-      lsRef.current[key] = value;
+      lsRef.current[key] = data;
     }
     return data;
   }
