@@ -22,7 +22,7 @@ export function IndexContent (props: {
     },
   ), []);
 
-  const [page, setPage] = useState(EPages.map);
+  const [page, setPage] = useState(EPages.tvshows);
   return <>
     <div className={styles.contentNav}>
       {
