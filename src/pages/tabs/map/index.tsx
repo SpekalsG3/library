@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {LayerGroup, MapContainer, TileLayer} from "react-leaflet";
 import {
   DivIcon,
+  LatLngLiteral,
   LayerGroup as TLLayerGroup,
   LeafletMouseEvent,
   Map as TLMap,
@@ -21,6 +22,7 @@ import {IResSuccess} from "@api/types";
 import {MapBookmarksDTO} from "../../../entities/map-bookmarks";
 import {IMapBMEditReq} from "@api/map/bms/[id].p";
 import {IMapBMCreateReq} from "@api/map/bms/index.p";
+import {useLocalStorage} from "../../../utils/use-local-storage";
 
 interface IBMElement {
   data: MapBookmarksDTO,
@@ -31,6 +33,11 @@ interface IBMElement {
 }
 
 export default function MapPage() {
+  const [settingsPos, saveSettingsPos] = useLocalStorage<{
+    center: LatLngLiteral,
+    zoom: number,
+  }>("map-settings-pos");
+
   const mapRef = useRef<TLMap>(null as any); // always set in handlers
   const bmsLayerRef = useRef<TLLayerGroup>(null as any);
   const localIdSeq = useRef(0);
@@ -195,6 +202,16 @@ export default function MapPage() {
     mapRef.current.addEventListener("click", onMapClick);
   }
 
+  function saveCenter() {
+    saveSettingsPos({
+      center: mapRef.current.getCenter(),
+      zoom: mapRef.current.getZoom(),
+    });
+  }
+
+  const initCenter = settingsPos?.center ?? { lat: 51.505, lng: -0.09 };
+  const initZoom = settingsPos?.zoom ?? 11;
+
   return <div className={styles.content}>
     {bmCurrent && <div className={styles.edit}>
       <Button className={styles.editClose} text={"x"} onClick={closeBmEdit} />
@@ -221,10 +238,14 @@ export default function MapPage() {
       <Button className={cn(styles.editField, styles.editHighlight)} onClick={deleteActiveBm} text={"Delete"} />
     </div>}
 
+    <div className={styles.control}>
+      <Button onClick={saveCenter} text={"Save Pos"}/>
+    </div>
+
     <MapContainer
       className={styles.map}
-      center={[51.505, -0.09]}
-      zoom={11}
+      center={initCenter}
+      zoom={initZoom}
       scrollWheelZoom={true}
       attributionControl={false}
       ref={mapRef}

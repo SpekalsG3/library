@@ -63,3 +63,13 @@
 .editHighlight {
     background: rgb(var(--highlight));
 }
+
+.control {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}

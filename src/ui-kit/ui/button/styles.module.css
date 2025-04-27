@@ -7,6 +7,7 @@
     transition: box-shadow .1s;
     text-align: center;
     user-select: none;
+    background: rgb(var(--main));
 }
 
 .button:hover {
