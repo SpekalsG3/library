@@ -2,5 +2,7 @@ node_modules
 .idea
 .next
 .DS_store
-sqlite3.db
 .env
+
+# Sqlite3 database file
+/*.db
