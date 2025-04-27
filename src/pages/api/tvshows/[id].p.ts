@@ -7,6 +7,7 @@ import { CinemaGenresDB } from "../../../entities/cinema-genres";
 import { CinemaTagsDB } from "../../../entities/cinema-tags";
 import {TVShowsGenresDB} from "../../../entities/tv-shows-genres-array";
 import {TVShowsTagsDB} from "../../../entities/tv-shows-tags-array";
+import {validateIdParam} from "@api/utils/validate-id-param";
 
 export interface IEditTvShowReq {
   item: TVShowDTOEditable,
@@ -16,14 +17,6 @@ function validateEditBody (body: IEditTvShowReq): IEditTvShowReq {
   return {
     item: validateEditItemData(body.item),
   }
-}
-
-function validateIdParam (param: string | string[] | undefined): number {
-  const id = Number(param);
-  runChecks([
-    [!isNaN(id), "/[id] should be a single parameter"],
-  ]);
-  return id
 }
 
 const put: Handle<undefined> = async function (req, res) {
@@ -133,12 +126,11 @@ const put: Handle<undefined> = async function (req, res) {
             );
         }
 
-        const deleteArrayIds = Object.values(arrayById);
+        const deleteArrayIds = Object.values(arrayById) as number[];
         if (deleteArrayIds.length > 0) {
           await knex.table(arrayTable.tableName)
             .delete()
             .whereIn(
-              // @ts-ignore // in doc, `whereIn` also accepts `(string, any[])`
               arrayTable.fields.id,
               deleteArrayIds,
             );

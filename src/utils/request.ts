@@ -82,7 +82,7 @@ async function doFetch<R>(
 
     return {
         response: {
-            body: await res.json(),
+            body: resBody,
             status: res.status,
         },
         errmsg: "Server returned error",

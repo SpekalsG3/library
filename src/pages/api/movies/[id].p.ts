@@ -7,14 +7,7 @@ import { CinemaTagsDB } from "../../../entities/cinema-tags";
 import {validateItemData} from "./index.p";
 import {MoviesGenresDB} from "../../../entities/movies-genres-array";
 import {MoviesTagsDB} from "../../../entities/movies-tags-array";
-
-function validateIdParam (param: string | string[] | undefined): number {
-  const id = Number(param);
-  runChecks([
-    [!isNaN(id), "/[id] should be a single parameter"],
-  ]);
-  return id
-}
+import {validateIdParam} from "@api/utils/validate-id-param";
 
 export interface IMovieUpdateDTO {
   item: MovieDTOEditable,
@@ -139,12 +132,11 @@ const put: Handle<undefined> = async function (req, res) {
             );
         }
 
-        const deleteArrayIds = Object.values(arrayById);
+        const deleteArrayIds = Object.values(arrayById) as number[];
         if (deleteArrayIds.length > 0) {
           await knex.table(arrayTable.tableName)
             .delete()
             .whereIn(
-              // @ts-ignore // in doc, `whereIn` also accepts `(string, any[])`
               arrayTable.fields.id,
               deleteArrayIds,
             );

@@ -1,0 +1,75 @@
+.content {
+    position: relative;
+    margin-top: 25px;
+    height: calc(100vh - 50px);
+}
+
+.map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.bm {
+}
+.bmSelected:after {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    content: "";
+    width: 26px;
+    height: 26px;
+    box-shadow: 0 0 4px 2px rgb(var(--highlight-semi));
+    border-radius: 50%;
+}
+
+.divMarker {
+    background: none;
+}
+
+.edit {
+    background: rgb(var(--main));
+    padding: 7px 7px 9px 7px;
+    z-index: 1000;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border-radius: 5px;
+}
+
+.editClose {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 0 6px 2px 7px;
+}
+
+.editTitle {
+}
+.editTitleInput {
+    text-align: center;
+    width: unset;
+    font-size: var(--size-mid);
+}
+
+.editField {
+    margin-top: 10px;
+}
+
+.editTags {
+    max-width: 200px;
+}
+
+.editHighlight {
+    background: rgb(var(--highlight));
+}
+
+.control {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}

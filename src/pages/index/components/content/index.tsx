@@ -1,25 +1,35 @@
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import cn from "classnames";
+import dynamic from "next/dynamic";
 
 import styles from './styles.module.css'
 import TvShowsPage from "../../../tabs/tvshows";
 import MoviesPage from "../../../tabs/movies";
 
 enum EPages {
-  movies = "movies",
   tvshows = "tvshows",
+  movies = "movies",
+  map = "map",
 }
 
 export function IndexContent (props: {
   isLoading: boolean, // TODO: use
 }) {
-  const [page, setPage] = useState(EPages.tvshows);
+  const MapPage = useMemo(() => dynamic(
+    () => import("../../../tabs/map"),
+    {
+      ssr: false,
+    },
+  ), []);
+
+  const [page, setPage] = useState(EPages.map);
   return <>
     <div className={styles.contentNav}>
       {
         [
           [EPages.tvshows, "Tv Shows"],
           [EPages.movies, "Movies"],
+          [EPages.map, "Map"],
         ].map(([flag, text], i) => (
           <div
             key={i}
@@ -34,6 +44,7 @@ export function IndexContent (props: {
     <div className={styles.pages}>
       {page === EPages.tvshows && <TvShowsPage/>}
       {page === EPages.movies && <MoviesPage/>}
+      {page === EPages.map && <MapPage/>}
     </div>
   </>
 }
